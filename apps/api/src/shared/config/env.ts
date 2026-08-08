@@ -17,6 +17,7 @@ const envSchema = z.object({
     .transform((v) => v === "true"),
   STRIPE_SECRET_KEY: z.string().min(1),
   STRIPE_WEBHOOK_SECRET: z.string().min(1),
+  PAYMENT_CURRENCY: z.string().length(3).default("usd"),
 });
 
 /** Fail fast on boot if required environment variables are missing/invalid. */

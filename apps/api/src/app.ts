@@ -7,6 +7,8 @@ import rateLimit from "express-rate-limit";
 import { env } from "./shared/config/env.js";
 import { errorHandler } from "./shared/middleware/errorHandler.js";
 import { router } from "./routes.js";
+import { createPaymentWebhookModuleRouter } from "./modules/payment/index.js";
+import { createBookingConfirmationPort } from "./modules/booking/index.js";
 
 export function createApp() {
   const app = express();
@@ -18,6 +20,10 @@ export function createApp() {
       credentials: true,
     }),
   );
+
+  // Mounted BEFORE express.json() — Stripe webhook signature verification needs the raw body bytes.
+  app.use("/api/v1", createPaymentWebhookModuleRouter(createBookingConfirmationPort()));
+
   app.use(express.json());
   app.use(cookieParser());
   app.use(mongoSanitize());
