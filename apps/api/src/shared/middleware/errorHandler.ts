@@ -1,0 +1,24 @@
+import type { NextFunction, Request, Response } from "express";
+import { AppError, ValidationError } from "../errors/AppError.js";
+
+/** Centralized error → HTTP response mapping. Must be registered last in app.ts. */
+export function errorHandler(
+  err: unknown,
+  _req: Request,
+  res: Response,
+  _next: NextFunction,
+): void {
+  if (err instanceof AppError) {
+    res.status(err.statusCode).json({
+      error: {
+        message: err.message,
+        code: err.code,
+        details: err instanceof ValidationError ? err.details : undefined,
+      },
+    });
+    return;
+  }
+
+  console.error(err);
+  res.status(500).json({ error: { message: "Internal server error", code: "INTERNAL_ERROR" } });
+}
