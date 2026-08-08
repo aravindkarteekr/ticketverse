@@ -4,8 +4,10 @@ import { screenRouter } from "./interface/http/screenRoutes.js";
 import { MongoTheatreRepository } from "./infrastructure/MongoTheatreRepository.js";
 import { TheatreProvisioningAdapter } from "./infrastructure/TheatreProvisioningAdapter.js";
 import { TheatreLookupAdapter } from "./infrastructure/TheatreLookupAdapter.js";
+import { ScreenLookupAdapter } from "./infrastructure/ScreenLookupAdapter.js";
 import type { TheatreProvisioningPort } from "../identity/domain/ports/TheatreProvisioningPort.js";
 import type { TheatreLookupPort } from "../show/domain/ports/TheatreLookupPort.js";
+import type { ScreenLookupPort } from "../booking/domain/ports/ScreenLookupPort.js";
 
 export function createTheatreRouter(): Router {
   const router = Router();
@@ -22,4 +24,9 @@ export function createTheatreProvisioningPort(): TheatreProvisioningPort {
 /** Real theatre-lookup implementation, wired into the show module at composition root. */
 export function createTheatreLookupPort(): TheatreLookupPort {
   return new TheatreLookupAdapter();
+}
+
+/** Real screen-lookup implementation, wired into the booking module at composition root. */
+export function createScreenLookupPort(): ScreenLookupPort {
+  return new ScreenLookupAdapter();
 }
