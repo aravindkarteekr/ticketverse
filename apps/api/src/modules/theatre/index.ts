@@ -3,7 +3,9 @@ import { theatreRouter } from "./interface/http/theatreRoutes.js";
 import { screenRouter } from "./interface/http/screenRoutes.js";
 import { MongoTheatreRepository } from "./infrastructure/MongoTheatreRepository.js";
 import { TheatreProvisioningAdapter } from "./infrastructure/TheatreProvisioningAdapter.js";
+import { TheatreLookupAdapter } from "./infrastructure/TheatreLookupAdapter.js";
 import type { TheatreProvisioningPort } from "../identity/domain/ports/TheatreProvisioningPort.js";
+import type { TheatreLookupPort } from "../show/domain/ports/TheatreLookupPort.js";
 
 export function createTheatreRouter(): Router {
   const router = Router();
@@ -15,4 +17,9 @@ export function createTheatreRouter(): Router {
 /** Real theatre-provisioning implementation, wired into the identity module at composition root. */
 export function createTheatreProvisioningPort(): TheatreProvisioningPort {
   return new TheatreProvisioningAdapter(new MongoTheatreRepository());
+}
+
+/** Real theatre-lookup implementation, wired into the show module at composition root. */
+export function createTheatreLookupPort(): TheatreLookupPort {
+  return new TheatreLookupAdapter();
 }
