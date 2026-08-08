@@ -29,6 +29,19 @@ export function NavBar() {
           TicketVerse
         </Typography>
         <Box display="flex" gap={1} alignItems="center">
+          <Button color="inherit" component={RouterLink} to="/movies">
+            Movies
+          </Button>
+          {user?.role === "theatre_owner" && (
+            <Button color="inherit" component={RouterLink} to="/theatres/mine">
+              My theatres
+            </Button>
+          )}
+          {user?.role === "user" && (
+            <Button color="inherit" component={RouterLink} to="/theatres/request">
+              Become an owner
+            </Button>
+          )}
           {user ? (
             <>
               <Typography variant="body2">{user.name}</Typography>
