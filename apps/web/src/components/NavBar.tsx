@@ -25,7 +25,12 @@ export function NavBar() {
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography variant="h6" component={RouterLink} to="/" sx={{ flexGrow: 1, color: "inherit", textDecoration: "none" }}>
+        <Typography
+          variant="h6"
+          component={RouterLink}
+          to="/"
+          sx={{ flexGrow: 1, color: "inherit", textDecoration: "none" }}
+        >
           TicketVerse
         </Typography>
         <Box display="flex" gap={1} alignItems="center">
@@ -43,7 +48,11 @@ export function NavBar() {
             </Button>
           )}
           {user?.role === "user" && (
-            <Button color="inherit" component={RouterLink} to="/theatres/request">
+            <Button
+              color="inherit"
+              component={RouterLink}
+              to="/theatres/request"
+            >
               Become an owner
             </Button>
           )}

@@ -14,10 +14,15 @@ export interface Paginated<T> {
   total: number;
 }
 
-export async function listPendingTheatreOwnerRequests(): Promise<TheatreOwnerRequest[]> {
-  const { data } = await apiClient.get<TheatreOwnerRequest[]>("/admin/theatre-owner-requests", {
-    params: { status: "pending" },
-  });
+export async function listPendingTheatreOwnerRequests(): Promise<
+  TheatreOwnerRequest[]
+> {
+  const { data } = await apiClient.get<TheatreOwnerRequest[]>(
+    "/admin/theatre-owner-requests",
+    {
+      params: { status: "pending" },
+    },
+  );
   return data;
 }
 
@@ -28,18 +33,33 @@ export async function reviewTheatreOwnerRequest(
   await apiClient.post(`/theatre-owner-requests/${id}/review`, input);
 }
 
-export async function listUsers(params: { page: number; limit: number }): Promise<Paginated<User>> {
-  const { data } = await apiClient.get<Paginated<User>>("/admin/users", { params });
+export async function listUsers(params: {
+  page: number;
+  limit: number;
+}): Promise<Paginated<User>> {
+  const { data } = await apiClient.get<Paginated<User>>("/admin/users", {
+    params,
+  });
   return data;
 }
 
-export async function listAdminTheatres(params: { page: number; limit: number }): Promise<Paginated<Theatre>> {
-  const { data } = await apiClient.get<Paginated<Theatre>>("/admin/theatres", { params });
+export async function listAdminTheatres(params: {
+  page: number;
+  limit: number;
+}): Promise<Paginated<Theatre>> {
+  const { data } = await apiClient.get<Paginated<Theatre>>("/admin/theatres", {
+    params,
+  });
   return data;
 }
 
-export async function listAdminBookings(params: { page: number; limit: number }): Promise<Paginated<Booking>> {
-  const { data } = await apiClient.get<Paginated<Booking>>("/admin/bookings", { params });
+export async function listAdminBookings(params: {
+  page: number;
+  limit: number;
+}): Promise<Paginated<Booking>> {
+  const { data } = await apiClient.get<Paginated<Booking>>("/admin/bookings", {
+    params,
+  });
   return data;
 }
 
@@ -48,7 +68,10 @@ export async function createMovie(input: CreateMovieInput): Promise<Movie> {
   return data;
 }
 
-export async function updateMovie(id: string, input: UpdateMovieInput): Promise<Movie> {
+export async function updateMovie(
+  id: string,
+  input: UpdateMovieInput,
+): Promise<Movie> {
   const { data } = await apiClient.patch<Movie>(`/movies/${id}`, input);
   return data;
 }

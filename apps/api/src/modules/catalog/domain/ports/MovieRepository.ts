@@ -13,5 +13,7 @@ export interface MovieRepository {
   findById(id: string): Promise<MovieEntity | null>;
   update(id: string, update: MovieUpdate): Promise<MovieEntity | null>;
   delete(id: string): Promise<void>;
-  search(params: MovieSearchParams): Promise<{ items: MovieEntity[]; total: number }>;
+  search(
+    params: MovieSearchParams,
+  ): Promise<{ items: MovieEntity[]; total: number }>;
 }

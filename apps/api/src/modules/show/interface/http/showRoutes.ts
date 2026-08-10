@@ -51,7 +51,9 @@ export function createShowRouter(theatreLookup: TheatreLookupPort): Router {
     "/theatres/:theatreId/shows",
     validate(theatreParamsSchema, "params"),
     asyncHandler(async (req, res) => {
-      const shows = await listShowsByTheatre((req.params as { theatreId: string }).theatreId);
+      const shows = await listShowsByTheatre(
+        (req.params as { theatreId: string }).theatreId,
+      );
       res.json(shows);
     }),
   );
@@ -83,7 +85,11 @@ export function createShowRouter(theatreLookup: TheatreLookupPort): Router {
     validate(paramsSchema, "params"),
     validate(updateShowSchema),
     asyncHandler(async (req, res) => {
-      const show = await updateShow((req.params as { id: string }).id, req.user!.id, req.body);
+      const show = await updateShow(
+        (req.params as { id: string }).id,
+        req.user!.id,
+        req.body,
+      );
       res.json(show);
     }),
   );

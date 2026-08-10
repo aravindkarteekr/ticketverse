@@ -70,7 +70,10 @@ movieRouter.patch(
   validate(paramsSchema, "params"),
   validate(updateMovieSchema),
   asyncHandler(async (req, res) => {
-    const movie = await updateMovie((req.params as { id: string }).id, req.body);
+    const movie = await updateMovie(
+      (req.params as { id: string }).id,
+      req.body,
+    );
     res.json(movie);
   }),
 );

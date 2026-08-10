@@ -5,7 +5,9 @@ import type { UserEntity } from "../domain/User.js";
 
 /** Verifies the refresh token + tokenVersion, returning the still-valid user for token rotation. */
 export function makeRefreshTokens(userRepo: UserRepository) {
-  return async function refreshTokens(refreshToken: string): Promise<UserEntity> {
+  return async function refreshTokens(
+    refreshToken: string,
+  ): Promise<UserEntity> {
     let payload;
     try {
       payload = verifyRefreshToken(refreshToken);

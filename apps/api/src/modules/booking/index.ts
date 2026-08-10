@@ -5,7 +5,10 @@ import type { BookingConfirmationPort } from "../payment/domain/ports/BookingCon
 import { createBookingRouter } from "./interface/http/bookingRoutes.js";
 import { BookingConfirmationAdapter } from "./infrastructure/BookingConfirmationAdapter.js";
 
-export function createBookingModuleRouter(showLookup: ShowLookupPort, screenLookup: ScreenLookupPort): Router {
+export function createBookingModuleRouter(
+  showLookup: ShowLookupPort,
+  screenLookup: ScreenLookupPort,
+): Router {
   return createBookingRouter(showLookup, screenLookup);
 }
 

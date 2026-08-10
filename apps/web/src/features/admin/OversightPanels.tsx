@@ -14,7 +14,10 @@ const PAGE_SIZE = 10;
 
 export function UsersAdminPanel() {
   const [page, setPage] = useState(1);
-  const { data } = useQuery({ queryKey: ["admin", "users", page], queryFn: () => listUsers({ page, limit: PAGE_SIZE }) });
+  const { data } = useQuery({
+    queryKey: ["admin", "users", page],
+    queryFn: () => listUsers({ page, limit: PAGE_SIZE }),
+  });
 
   return (
     <Box>
@@ -120,7 +123,9 @@ export function BookingsAdminPanel() {
               <TableCell>{booking.seatIds.join(", ")}</TableCell>
               <TableCell>₹{booking.totalAmount}</TableCell>
               <TableCell>{booking.status}</TableCell>
-              <TableCell>{new Date(booking.createdAt).toLocaleString()}</TableCell>
+              <TableCell>
+                {new Date(booking.createdAt).toLocaleString()}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

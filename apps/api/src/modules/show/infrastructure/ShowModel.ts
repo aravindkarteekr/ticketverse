@@ -2,7 +2,11 @@ import { Schema, model, type InferSchemaType } from "mongoose";
 
 const seatPricingSchema = new Schema(
   {
-    seatType: { type: String, enum: ["regular", "premium", "recliner"], required: true },
+    seatType: {
+      type: String,
+      enum: ["regular", "premium", "recliner"],
+      required: true,
+    },
     price: { type: Number, required: true, min: 0 },
   },
   { _id: false },

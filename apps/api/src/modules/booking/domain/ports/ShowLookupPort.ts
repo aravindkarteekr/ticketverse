@@ -4,5 +4,9 @@ import type { SeatPricing } from "@ticketverse/schemas";
 export interface ShowLookupPort {
   getShowForBooking(
     showId: string,
-  ): Promise<{ screenId: string; pricing: SeatPricing[]; startTime: Date } | null>;
+  ): Promise<{
+    screenId: string;
+    pricing: SeatPricing[];
+    startTime: Date;
+  } | null>;
 }

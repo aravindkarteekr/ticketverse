@@ -42,18 +42,23 @@ export function MoviesAdminPanel() {
       setFormError(null);
       queryClient.invalidateQueries({ queryKey: ["admin", "movies"] });
     },
-    onError: () => setFormError("Failed to create movie. Check the fields and try again."),
+    onError: () =>
+      setFormError("Failed to create movie. Check the fields and try again."),
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteMovie(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin", "movies"] }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["admin", "movies"] }),
   });
 
   function onSubmit(values: CreateMovieInput) {
     const genres =
       typeof values.genres === "string"
-        ? (values.genres as unknown as string).split(",").map((g) => g.trim()).filter(Boolean)
+        ? (values.genres as unknown as string)
+            .split(",")
+            .map((g) => g.trim())
+            .filter(Boolean)
         : values.genres;
     createMutation.mutate({ ...values, genres });
   }
@@ -66,7 +71,12 @@ export function MoviesAdminPanel() {
 
       <Box component="form" onSubmit={handleSubmit(onSubmit)} mb={4}>
         <Stack spacing={2} maxWidth={500}>
-          <TextField label="Title" {...register("title")} error={!!errors.title} helperText={errors.title?.message} />
+          <TextField
+            label="Title"
+            {...register("title")}
+            error={!!errors.title}
+            helperText={errors.title?.message}
+          />
           <TextField
             label="Description"
             multiline
@@ -88,7 +98,12 @@ export function MoviesAdminPanel() {
             error={!!errors.genres}
             helperText={errors.genres?.message}
           />
-          <TextField label="Language" {...register("language")} error={!!errors.language} helperText={errors.language?.message} />
+          <TextField
+            label="Language"
+            {...register("language")}
+            error={!!errors.language}
+            helperText={errors.language?.message}
+          />
           <TextField
             label="Release date"
             type="date"
@@ -97,9 +112,18 @@ export function MoviesAdminPanel() {
             error={!!errors.releaseDate}
             helperText={errors.releaseDate?.message}
           />
-          <TextField label="Poster URL (optional)" {...register("posterUrl")} error={!!errors.posterUrl} helperText={errors.posterUrl?.message} />
+          <TextField
+            label="Poster URL (optional)"
+            {...register("posterUrl")}
+            error={!!errors.posterUrl}
+            helperText={errors.posterUrl?.message}
+          />
           {formError && <Typography color="error">{formError}</Typography>}
-          <Button type="submit" variant="contained" disabled={createMutation.isPending}>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={createMutation.isPending}
+          >
             Add movie
           </Button>
         </Stack>
@@ -111,12 +135,18 @@ export function MoviesAdminPanel() {
             key={movie.id}
             divider
             secondaryAction={
-              <IconButton edge="end" onClick={() => deleteMutation.mutate(movie.id)}>
+              <IconButton
+                edge="end"
+                onClick={() => deleteMutation.mutate(movie.id)}
+              >
                 <DeleteIcon />
               </IconButton>
             }
           >
-            <ListItemText primary={movie.title} secondary={`${movie.language} · ${movie.durationMinutes} min`} />
+            <ListItemText
+              primary={movie.title}
+              secondary={`${movie.language} · ${movie.durationMinutes} min`}
+            />
           </ListItem>
         ))}
       </List>

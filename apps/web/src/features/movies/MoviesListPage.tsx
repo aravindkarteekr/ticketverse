@@ -37,7 +37,14 @@ export function MoviesListPage() {
           <Grid item xs={12} sm={6} md={4} key={movie.id}>
             <Card>
               <CardActionArea component={RouterLink} to={`/movies/${movie.id}`}>
-                {movie.posterUrl && <CardMedia component="img" height={280} image={movie.posterUrl} alt={movie.title} />}
+                {movie.posterUrl && (
+                  <CardMedia
+                    component="img"
+                    height={280}
+                    image={movie.posterUrl}
+                    alt={movie.title}
+                  />
+                )}
                 <CardContent>
                   <Typography variant="subtitle1">{movie.title}</Typography>
                   <Typography variant="body2" color="text.secondary">
@@ -49,7 +56,9 @@ export function MoviesListPage() {
           </Grid>
         ))}
       </Grid>
-      {!isLoading && data?.items.length === 0 && <Typography>No movies found.</Typography>}
+      {!isLoading && data?.items.length === 0 && (
+        <Typography>No movies found.</Typography>
+      )}
     </Box>
   );
 }

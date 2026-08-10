@@ -16,7 +16,9 @@ const theatreOwnerRequestSchema = new Schema(
   { timestamps: { createdAt: true, updatedAt: true } },
 );
 
-export type TheatreOwnerRequestDocument = InferSchemaType<typeof theatreOwnerRequestSchema>;
+export type TheatreOwnerRequestDocument = InferSchemaType<
+  typeof theatreOwnerRequestSchema
+>;
 export const TheatreOwnerRequestModel = model(
   "TheatreOwnerRequest",
   theatreOwnerRequestSchema,

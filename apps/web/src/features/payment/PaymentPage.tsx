@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import {
+  Elements,
+  PaymentElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -42,7 +47,12 @@ function CheckoutForm() {
           {error}
         </Alert>
       )}
-      <Button type="submit" variant="contained" disabled={!stripe || submitting} sx={{ mt: 2 }}>
+      <Button
+        type="submit"
+        variant="contained"
+        disabled={!stripe || submitting}
+        sx={{ mt: 2 }}
+      >
         {submitting ? "Processing…" : "Pay now"}
       </Button>
     </Box>
@@ -78,7 +88,9 @@ export function PaymentPage() {
       <Box maxWidth={500} mx="auto" mt={4} px={2}>
         <Alert severity="info">
           This booking is already {booking.status}.{" "}
-          <Button onClick={() => navigate("/bookings/mine")}>View my bookings</Button>
+          <Button onClick={() => navigate("/bookings/mine")}>
+            View my bookings
+          </Button>
         </Alert>
       </Box>
     );

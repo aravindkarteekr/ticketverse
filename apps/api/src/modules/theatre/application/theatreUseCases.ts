@@ -1,11 +1,19 @@
-import { ForbiddenError, NotFoundError } from "../../../shared/errors/AppError.js";
+import {
+  ForbiddenError,
+  NotFoundError,
+} from "../../../shared/errors/AppError.js";
 import type { TheatreUpdate } from "../domain/Theatre.js";
 import type { TheatreRepository } from "../domain/ports/TheatreRepository.js";
 
-async function assertOwnership(theatreRepo: TheatreRepository, theatreId: string, ownerId: string) {
+async function assertOwnership(
+  theatreRepo: TheatreRepository,
+  theatreId: string,
+  ownerId: string,
+) {
   const theatre = await theatreRepo.findById(theatreId);
   if (!theatre) throw new NotFoundError("Theatre not found");
-  if (theatre.ownerId !== ownerId) throw new ForbiddenError("You do not own this theatre");
+  if (theatre.ownerId !== ownerId)
+    throw new ForbiddenError("You do not own this theatre");
   return theatre;
 }
 

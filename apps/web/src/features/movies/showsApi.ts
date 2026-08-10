@@ -6,7 +6,11 @@ export interface PaginatedShows {
   total: number;
 }
 
-export async function searchShows(params: { movieId?: string; city?: string; date?: string }): Promise<PaginatedShows> {
+export async function searchShows(params: {
+  movieId?: string;
+  city?: string;
+  date?: string;
+}): Promise<PaginatedShows> {
   const { data } = await apiClient.get<PaginatedShows>("/shows", { params });
   return data;
 }

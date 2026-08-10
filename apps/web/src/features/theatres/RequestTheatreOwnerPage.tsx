@@ -1,7 +1,10 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { createTheatreOwnerRequestSchema, type CreateTheatreOwnerRequestInput } from "@ticketverse/schemas";
+import {
+  createTheatreOwnerRequestSchema,
+  type CreateTheatreOwnerRequestInput,
+} from "@ticketverse/schemas";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -14,7 +17,9 @@ export function RequestTheatreOwnerPage() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<CreateTheatreOwnerRequestInput>({ resolver: zodResolver(createTheatreOwnerRequestSchema) });
+  } = useForm<CreateTheatreOwnerRequestInput>({
+    resolver: zodResolver(createTheatreOwnerRequestSchema),
+  });
 
   const mutation = useMutation({ mutationFn: requestTheatreOwner });
 
@@ -28,15 +33,29 @@ export function RequestTheatreOwnerPage() {
           Request submitted. An admin will review it shortly.
         </Alert>
       )}
-      {mutation.isError && <Alert severity="error" sx={{ mb: 2 }}>Could not submit request.</Alert>}
-      <Box component="form" onSubmit={handleSubmit((input) => mutation.mutate(input))} display="grid" gap={2}>
+      {mutation.isError && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          Could not submit request.
+        </Alert>
+      )}
+      <Box
+        component="form"
+        onSubmit={handleSubmit((input) => mutation.mutate(input))}
+        display="grid"
+        gap={2}
+      >
         <TextField
           label="Theatre name"
           {...register("theatreName")}
           error={!!errors.theatreName}
           helperText={errors.theatreName?.message}
         />
-        <TextField label="City" {...register("city")} error={!!errors.city} helperText={errors.city?.message} />
+        <TextField
+          label="City"
+          {...register("city")}
+          error={!!errors.city}
+          helperText={errors.city?.message}
+        />
         <TextField
           label="Reason (optional)"
           multiline

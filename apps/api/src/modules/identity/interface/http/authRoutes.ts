@@ -27,7 +27,14 @@ authRouter.post(
   asyncHandler(async (req, res) => {
     const user = await signup(req.body);
     setAuthCookies(res, user);
-    res.status(201).json({ id: user.id, name: user.name, email: user.email, role: user.role });
+    res
+      .status(201)
+      .json({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      });
   }),
 );
 
@@ -37,7 +44,12 @@ authRouter.post(
   asyncHandler(async (req, res) => {
     const user = await login(req.body);
     setAuthCookies(res, user);
-    res.json({ id: user.id, name: user.name, email: user.email, role: user.role });
+    res.json({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    });
   }),
 );
 
@@ -50,7 +62,12 @@ authRouter.post(
     }
     const user = await refreshTokens(refreshToken);
     setAuthCookies(res, user);
-    res.json({ id: user.id, name: user.name, email: user.email, role: user.role });
+    res.json({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    });
   }),
 );
 
@@ -69,6 +86,11 @@ authRouter.get(
   authenticate,
   asyncHandler(async (req, res) => {
     const user = await getMe(req.user!.id);
-    res.json({ id: user.id, name: user.name, email: user.email, role: user.role });
+    res.json({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    });
   }),
 );

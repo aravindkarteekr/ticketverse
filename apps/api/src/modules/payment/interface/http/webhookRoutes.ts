@@ -10,9 +10,15 @@ import { makeHandleStripeWebhook } from "../../application/paymentUseCases.js";
  * Mounted directly in `app.ts` BEFORE the global `express.json()` parser — Stripe signature
  * verification requires the exact raw request body bytes.
  */
-export function createPaymentWebhookRouter(bookingConfirmation: BookingConfirmationPort): Router {
+export function createPaymentWebhookRouter(
+  bookingConfirmation: BookingConfirmationPort,
+): Router {
   const paymentRepo = new MongoPaymentRepository();
-  const handleWebhook = makeHandleStripeWebhook(paymentRepo, bookingConfirmation, stripe);
+  const handleWebhook = makeHandleStripeWebhook(
+    paymentRepo,
+    bookingConfirmation,
+    stripe,
+  );
 
   const router = Router();
 
@@ -21,7 +27,8 @@ export function createPaymentWebhookRouter(bookingConfirmation: BookingConfirmat
     raw({ type: "application/json" }),
     asyncHandler(async (req, res) => {
       const signature = req.headers["stripe-signature"];
-      if (typeof signature !== "string") throw new ValidationError("Missing Stripe signature header");
+      if (typeof signature !== "string")
+        throw new ValidationError("Missing Stripe signature header");
       await handleWebhook(req.body as Buffer, signature);
       res.json({ received: true });
     }),

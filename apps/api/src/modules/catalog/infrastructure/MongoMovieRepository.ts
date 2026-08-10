@@ -1,5 +1,8 @@
 import type { HydratedDocument } from "mongoose";
-import type { MovieRepository, MovieSearchParams } from "../domain/ports/MovieRepository.js";
+import type {
+  MovieRepository,
+  MovieSearchParams,
+} from "../domain/ports/MovieRepository.js";
 import type { MovieEntity, MovieUpdate, NewMovie } from "../domain/Movie.js";
 import { MovieModel, type MovieDocument } from "./MovieModel.js";
 
@@ -29,7 +32,11 @@ export class MongoMovieRepository implements MovieRepository {
   }
 
   async update(id: string, update: MovieUpdate): Promise<MovieEntity | null> {
-    const doc = await MovieModel.findByIdAndUpdate(id, { $set: update }, { new: true });
+    const doc = await MovieModel.findByIdAndUpdate(
+      id,
+      { $set: update },
+      { new: true },
+    );
     return doc ? toEntity(doc) : null;
   }
 
@@ -45,7 +52,10 @@ export class MongoMovieRepository implements MovieRepository {
 
     const skip = (params.page - 1) * params.limit;
     const [docs, total] = await Promise.all([
-      MovieModel.find(filter).sort({ releaseDate: -1 }).skip(skip).limit(params.limit),
+      MovieModel.find(filter)
+        .sort({ releaseDate: -1 })
+        .skip(skip)
+        .limit(params.limit),
       MovieModel.countDocuments(filter),
     ]);
     return { items: docs.map(toEntity), total };

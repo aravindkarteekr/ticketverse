@@ -16,7 +16,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CircularProgress from "@mui/material/CircularProgress";
 import { listScreens } from "./theatresApi.js";
 import { searchMovies } from "../movies/moviesApi.js";
-import { createShow, deleteShow, listShowsByTheatre } from "../movies/showsApi.js";
+import {
+  createShow,
+  deleteShow,
+  listShowsByTheatre,
+} from "../movies/showsApi.js";
 
 export function TheatreShowsPage() {
   const { theatreId } = useParams<{ theatreId: string }>();
@@ -33,7 +37,10 @@ export function TheatreShowsPage() {
     queryFn: () => listScreens(theatreId!),
     enabled: !!theatreId,
   });
-  const { data: movies } = useQuery({ queryKey: ["movies", "all"], queryFn: () => searchMovies({}) });
+  const { data: movies } = useQuery({
+    queryKey: ["movies", "all"],
+    queryFn: () => searchMovies({}),
+  });
   const { data: shows, isLoading: isShowsLoading } = useQuery({
     queryKey: ["theatreShows", theatreId],
     queryFn: () => listShowsByTheatre(theatreId!),
@@ -42,7 +49,10 @@ export function TheatreShowsPage() {
 
   const selectedScreen = screens?.find((s) => s.id === screenId);
   const seatTypes = useMemo(
-    () => Array.from(new Set(selectedScreen?.layout.map((row) => row.seatType) ?? [])),
+    () =>
+      Array.from(
+        new Set(selectedScreen?.layout.map((row) => row.seatType) ?? []),
+      ),
     [selectedScreen],
   );
 
@@ -61,18 +71,27 @@ export function TheatreShowsPage() {
       setFormError(null);
       queryClient.invalidateQueries({ queryKey: ["theatreShows", theatreId] });
     },
-    onError: () => setFormError("Failed to schedule show. Check the fields and try again."),
+    onError: () =>
+      setFormError("Failed to schedule show. Check the fields and try again."),
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteShow(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["theatreShows", theatreId] }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["theatreShows", theatreId] }),
   });
 
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    if (!screenId || !movieId || !startTime || seatTypes.some((t) => !prices[t])) {
-      setFormError("Please fill in every field, including a price for each seat type.");
+    if (
+      !screenId ||
+      !movieId ||
+      !startTime ||
+      seatTypes.some((t) => !prices[t])
+    ) {
+      setFormError(
+        "Please fill in every field, including a price for each seat type.",
+      );
       return;
     }
     createMutation.mutate();
@@ -86,14 +105,24 @@ export function TheatreShowsPage() {
 
       <Box component="form" onSubmit={handleSubmit} mb={4}>
         <Stack spacing={2}>
-          <TextField select label="Screen" value={screenId} onChange={(e) => setScreenId(e.target.value)}>
+          <TextField
+            select
+            label="Screen"
+            value={screenId}
+            onChange={(e) => setScreenId(e.target.value)}
+          >
             {screens?.map((screen) => (
               <MenuItem key={screen.id} value={screen.id}>
                 {screen.name}
               </MenuItem>
             ))}
           </TextField>
-          <TextField select label="Movie" value={movieId} onChange={(e) => setMovieId(e.target.value)}>
+          <TextField
+            select
+            label="Movie"
+            value={movieId}
+            onChange={(e) => setMovieId(e.target.value)}
+          >
             {movies?.items.map((movie) => (
               <MenuItem key={movie.id} value={movie.id}>
                 {movie.title}
@@ -113,11 +142,17 @@ export function TheatreShowsPage() {
               label={`Price — ${seatType}`}
               type="number"
               value={prices[seatType] ?? ""}
-              onChange={(e) => setPrices((prev) => ({ ...prev, [seatType]: e.target.value }))}
+              onChange={(e) =>
+                setPrices((prev) => ({ ...prev, [seatType]: e.target.value }))
+              }
             />
           ))}
           {formError && <Typography color="error">{formError}</Typography>}
-          <Button type="submit" variant="contained" disabled={createMutation.isPending}>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={createMutation.isPending}
+          >
             Schedule show
           </Button>
         </Stack>
@@ -133,12 +168,18 @@ export function TheatreShowsPage() {
             key={show.id}
             divider
             secondaryAction={
-              <IconButton edge="end" onClick={() => deleteMutation.mutate(show.id)}>
+              <IconButton
+                edge="end"
+                onClick={() => deleteMutation.mutate(show.id)}
+              >
                 <DeleteIcon />
               </IconButton>
             }
           >
-            <ListItemText primary={new Date(show.startTime).toLocaleString()} secondary={`Screen: ${show.screenId}`} />
+            <ListItemText
+              primary={new Date(show.startTime).toLocaleString()}
+              secondary={`Screen: ${show.screenId}`}
+            />
           </ListItem>
         ))}
       </List>

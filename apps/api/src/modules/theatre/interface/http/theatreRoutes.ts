@@ -1,6 +1,10 @@
 import { Router } from "express";
 import { z } from "zod";
-import { updateTheatreSchema, paginationQuerySchema, objectIdSchema } from "@ticketverse/schemas";
+import {
+  updateTheatreSchema,
+  paginationQuerySchema,
+  objectIdSchema,
+} from "@ticketverse/schemas";
 import { validate } from "../../../../shared/middleware/validate.js";
 import { authenticate } from "../../../../shared/middleware/authenticate.js";
 import { requireRole } from "../../../../shared/middleware/requireRole.js";
@@ -61,7 +65,11 @@ theatreRouter.patch(
   validate(paramsSchema, "params"),
   validate(updateTheatreSchema),
   asyncHandler(async (req, res) => {
-    const theatre = await updateTheatre((req.params as { id: string }).id, req.user!.id, req.body);
+    const theatre = await updateTheatre(
+      (req.params as { id: string }).id,
+      req.user!.id,
+      req.body,
+    );
     res.json(theatre);
   }),
 );

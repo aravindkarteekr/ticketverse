@@ -34,7 +34,11 @@ export function MyBookingsPage() {
                 key={booking.id}
                 divider
                 component={RouterLink}
-                to={booking.status === "pending_payment" ? `/payment/${booking.id}` : "#"}
+                to={
+                  booking.status === "pending_payment"
+                    ? `/payment/${booking.id}`
+                    : "#"
+                }
                 sx={{ color: "inherit", textDecoration: "none" }}
               >
                 <ListItemText
@@ -46,7 +50,8 @@ export function MyBookingsPage() {
                   color={
                     booking.status === "confirmed"
                       ? "success"
-                      : booking.status === "cancelled" || booking.status === "expired"
+                      : booking.status === "cancelled" ||
+                          booking.status === "expired"
                         ? "default"
                         : "warning"
                   }

@@ -6,7 +6,9 @@ export interface PaginatedMovies {
   total: number;
 }
 
-export async function searchMovies(params: { q?: string }): Promise<PaginatedMovies> {
+export async function searchMovies(params: {
+  q?: string;
+}): Promise<PaginatedMovies> {
   const { data } = await apiClient.get<PaginatedMovies>("/movies", { params });
   return data;
 }

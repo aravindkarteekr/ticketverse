@@ -22,7 +22,10 @@ export function createApp() {
   );
 
   // Mounted BEFORE express.json() — Stripe webhook signature verification needs the raw body bytes.
-  app.use("/api/v1", createPaymentWebhookModuleRouter(createBookingConfirmationPort()));
+  app.use(
+    "/api/v1",
+    createPaymentWebhookModuleRouter(createBookingConfirmationPort()),
+  );
 
   app.use(express.json());
   app.use(cookieParser());

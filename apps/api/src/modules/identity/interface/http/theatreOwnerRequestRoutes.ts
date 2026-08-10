@@ -19,9 +19,13 @@ import { makeListUsers } from "../../application/listUsers.js";
 import type { TheatreProvisioningPort } from "../../domain/ports/TheatreProvisioningPort.js";
 
 const paramsSchema = z.object({ id: objectIdSchema });
-const listQuerySchema = z.object({ status: theatreOwnerRequestStatusSchema.default("pending") });
+const listQuerySchema = z.object({
+  status: theatreOwnerRequestStatusSchema.default("pending"),
+});
 
-export function createTheatreOwnerRequestRouter(theatreProvisioning: TheatreProvisioningPort): Router {
+export function createTheatreOwnerRequestRouter(
+  theatreProvisioning: TheatreProvisioningPort,
+): Router {
   const userRepo = new MongoUserRepository();
   const requestRepo = new MongoTheatreOwnerRequestRepository();
   const requestTheatreOwner = makeRequestTheatreOwner(requestRepo);
@@ -64,7 +68,9 @@ export function createTheatreOwnerRequestRouter(theatreProvisioning: TheatreProv
     requireRole("admin"),
     validate(listQuerySchema, "query"),
     asyncHandler(async (req, res) => {
-      const { status } = req.query as unknown as { status: "pending" | "approved" | "rejected" };
+      const { status } = req.query as unknown as {
+        status: "pending" | "approved" | "rejected";
+      };
       const requests = await requestRepo.listByStatus(status);
       res.json(requests);
     }),

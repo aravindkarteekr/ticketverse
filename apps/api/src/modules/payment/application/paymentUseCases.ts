@@ -1,6 +1,10 @@
 import type Stripe from "stripe";
 import { env } from "../../../shared/config/env.js";
-import { ConflictError, NotFoundError, ValidationError } from "../../../shared/errors/AppError.js";
+import {
+  ConflictError,
+  NotFoundError,
+  ValidationError,
+} from "../../../shared/errors/AppError.js";
 import type { PaymentRepository } from "../domain/ports/PaymentRepository.js";
 import type { BookingConfirmationPort } from "../domain/ports/BookingConfirmationPort.js";
 
@@ -48,12 +52,19 @@ export function makeHandleStripeWebhook(
   return async (rawBody: Buffer, signature: string) => {
     let event: Stripe.Event;
     try {
-      event = stripe.webhooks.constructEvent(rawBody, signature, env.STRIPE_WEBHOOK_SECRET);
+      event = stripe.webhooks.constructEvent(
+        rawBody,
+        signature,
+        env.STRIPE_WEBHOOK_SECRET,
+      );
     } catch {
       throw new ValidationError("Invalid Stripe webhook signature");
     }
 
-    if (event.type === "payment_intent.succeeded" || event.type === "payment_intent.payment_failed") {
+    if (
+      event.type === "payment_intent.succeeded" ||
+      event.type === "payment_intent.payment_failed"
+    ) {
       const intent = event.data.object as Stripe.PaymentIntent;
       const payment = await paymentRepo.findByStripePaymentIntentId(intent.id);
       if (!payment) return;

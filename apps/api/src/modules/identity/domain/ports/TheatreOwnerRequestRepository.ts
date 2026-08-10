@@ -8,6 +8,8 @@ import type {
 export interface TheatreOwnerRequestRepository {
   create(request: NewTheatreOwnerRequest): Promise<TheatreOwnerRequestEntity>;
   findById(id: string): Promise<TheatreOwnerRequestEntity | null>;
-  listByStatus(status: TheatreOwnerRequestStatus): Promise<TheatreOwnerRequestEntity[]>;
+  listByStatus(
+    status: TheatreOwnerRequestStatus,
+  ): Promise<TheatreOwnerRequestEntity[]>;
   updateStatus(id: string, status: TheatreOwnerRequestStatus): Promise<void>;
 }

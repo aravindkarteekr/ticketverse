@@ -38,7 +38,10 @@ export const router = createBrowserRouter([
         element: <ProtectedRoute allowedRoles={["theatre_owner"]} />,
         children: [
           { path: "theatres/mine", element: <MyTheatresPage /> },
-          { path: "theatres/:theatreId/screens", element: <TheatreScreensPage /> },
+          {
+            path: "theatres/:theatreId/screens",
+            element: <TheatreScreensPage />,
+          },
           { path: "theatres/:theatreId/shows", element: <TheatreShowsPage /> },
         ],
       },

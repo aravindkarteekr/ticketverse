@@ -14,13 +14,26 @@ import { getMovie } from "./moviesApi.js";
 import { searchShows } from "./showsApi.js";
 import { getTheatre } from "../theatres/theatresApi.js";
 
-function ShowRow({ showId, theatreId, startTime }: { showId: string; theatreId: string; startTime: string }) {
-  const { data: theatre } = useQuery({ queryKey: ["theatre", theatreId], queryFn: () => getTheatre(theatreId) });
+function ShowRow({
+  showId,
+  theatreId,
+  startTime,
+}: {
+  showId: string;
+  theatreId: string;
+  startTime: string;
+}) {
+  const { data: theatre } = useQuery({
+    queryKey: ["theatre", theatreId],
+    queryFn: () => getTheatre(theatreId),
+  });
 
   return (
     <ListItemButton component={RouterLink} to={`/shows/${showId}`}>
       <ListItemText
-        primary={theatre ? `${theatre.name} — ${theatre.city}` : "Loading theatre…"}
+        primary={
+          theatre ? `${theatre.name} — ${theatre.city}` : "Loading theatre…"
+        }
         secondary={new Date(startTime).toLocaleString()}
       />
     </ListItemButton>
@@ -50,7 +63,8 @@ export function MovieDetailPage() {
     <Box maxWidth={800} mx="auto" mt={4} px={2}>
       <Typography variant="h4">{movie.title}</Typography>
       <Typography variant="body2" color="text.secondary" mb={1}>
-        {movie.language} · {movie.durationMinutes} min · {new Date(movie.releaseDate).toLocaleDateString()}
+        {movie.language} · {movie.durationMinutes} min ·{" "}
+        {new Date(movie.releaseDate).toLocaleDateString()}
       </Typography>
       <Stack direction="row" spacing={1} mb={2}>
         {movie.genres.map((genre) => (
@@ -72,10 +86,17 @@ export function MovieDetailPage() {
       {isShowsLoading && <CircularProgress />}
       <List>
         {shows?.items.map((show) => (
-          <ShowRow key={show.id} showId={show.id} theatreId={show.theatreId} startTime={show.startTime as unknown as string} />
+          <ShowRow
+            key={show.id}
+            showId={show.id}
+            theatreId={show.theatreId}
+            startTime={show.startTime as unknown as string}
+          />
         ))}
       </List>
-      {!isShowsLoading && shows?.items.length === 0 && <Typography>No showtimes found.</Typography>}
+      {!isShowsLoading && shows?.items.length === 0 && (
+        <Typography>No showtimes found.</Typography>
+      )}
     </Box>
   );
 }

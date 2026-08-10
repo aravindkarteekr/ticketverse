@@ -40,7 +40,12 @@ export function SignupPage() {
           Could not create account. Email may already be in use.
         </Alert>
       )}
-      <Box component="form" onSubmit={handleSubmit((input) => mutation.mutate(input))} display="grid" gap={2}>
+      <Box
+        component="form"
+        onSubmit={handleSubmit((input) => mutation.mutate(input))}
+        display="grid"
+        gap={2}
+      >
         <TextField
           label="Name"
           {...register("name")}
@@ -66,7 +71,10 @@ export function SignupPage() {
         </Button>
       </Box>
       <Typography mt={2}>
-        Already have an account? <Link component={RouterLink} to="/login">Log in</Link>
+        Already have an account?{" "}
+        <Link component={RouterLink} to="/login">
+          Log in
+        </Link>
       </Typography>
     </Box>
   );

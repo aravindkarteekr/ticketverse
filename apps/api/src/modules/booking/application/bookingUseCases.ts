@@ -1,6 +1,9 @@
 import { randomUUID } from "node:crypto";
 import type { SeatAvailability } from "@ticketverse/schemas";
-import { ConflictError, NotFoundError } from "../../../shared/errors/AppError.js";
+import {
+  ConflictError,
+  NotFoundError,
+} from "../../../shared/errors/AppError.js";
 import { expandSeatLayout } from "../domain/seatLayout.js";
 import type { BookingRepository } from "../domain/ports/BookingRepository.js";
 import type { ShowLookupPort } from "../domain/ports/ShowLookupPort.js";
@@ -22,7 +25,9 @@ export function makeGetSeatAvailability(
     if (!layout) throw new NotFoundError("Screen not found");
 
     const seatTypeBySeatId = expandSeatLayout(layout);
-    const priceBySeatType = new Map(show.pricing.map((p) => [p.seatType, p.price]));
+    const priceBySeatType = new Map(
+      show.pricing.map((p) => [p.seatType, p.price]),
+    );
 
     const [bookedSeatIds, heldSeatIds] = await Promise.all([
       bookingRepo.findBookedSeatIds(showId),
@@ -35,18 +40,30 @@ export function makeGetSeatAvailability(
       seatId,
       seatType,
       price: priceBySeatType.get(seatType) ?? 0,
-      status: booked.has(seatId) ? "booked" : held.has(seatId) ? "held" : "available",
+      status: booked.has(seatId)
+        ? "booked"
+        : held.has(seatId)
+          ? "held"
+          : "available",
     }));
   };
 }
 
-export function makeHoldSeats(seatHold: SeatHoldPort, showLookup: ShowLookupPort) {
+export function makeHoldSeats(
+  seatHold: SeatHoldPort,
+  showLookup: ShowLookupPort,
+) {
   return async (showId: string, seatIds: string[]) => {
     const show = await showLookup.getShowForBooking(showId);
     if (!show) throw new NotFoundError("Show not found");
 
     const holdId = randomUUID();
-    const result = await seatHold.holdSeats(showId, seatIds, holdId, HOLD_TTL_SECONDS);
+    const result = await seatHold.holdSeats(
+      showId,
+      seatIds,
+      holdId,
+      HOLD_TTL_SECONDS,
+    );
     return {
       holdId,
       unavailableSeatIds: result.unavailableSeatIds,
@@ -61,9 +78,17 @@ export function makeCreateBooking(
   screenLookup: ScreenLookupPort,
   seatHold: SeatHoldPort,
 ) {
-  return async (userId: string, showId: string, holdId: string, seatIds: string[]) => {
+  return async (
+    userId: string,
+    showId: string,
+    holdId: string,
+    seatIds: string[],
+  ) => {
     const holdIsValid = await seatHold.verifyHold(showId, seatIds, holdId);
-    if (!holdIsValid) throw new ConflictError("Seat hold has expired or seats are no longer reserved");
+    if (!holdIsValid)
+      throw new ConflictError(
+        "Seat hold has expired or seats are no longer reserved",
+      );
 
     const show = await showLookup.getShowForBooking(showId);
     if (!show) throw new NotFoundError("Show not found");
@@ -71,7 +96,9 @@ export function makeCreateBooking(
     if (!layout) throw new NotFoundError("Screen not found");
 
     const seatTypeBySeatId = expandSeatLayout(layout);
-    const priceBySeatType = new Map(show.pricing.map((p) => [p.seatType, p.price]));
+    const priceBySeatType = new Map(
+      show.pricing.map((p) => [p.seatType, p.price]),
+    );
     const totalAmount = seatIds.reduce((sum, seatId) => {
       const seatType = seatTypeBySeatId.get(seatId);
       const price = seatType ? (priceBySeatType.get(seatType) ?? 0) : 0;
@@ -107,7 +134,10 @@ export function makeListAllBookings(bookingRepo: BookingRepository) {
 }
 
 /** Called by the payment module once Stripe confirms the charge. */
-export function makeConfirmBooking(bookingRepo: BookingRepository, seatHold: SeatHoldPort) {
+export function makeConfirmBooking(
+  bookingRepo: BookingRepository,
+  seatHold: SeatHoldPort,
+) {
   return async (id: string) => {
     const booking = await bookingRepo.findById(id);
     if (!booking) throw new NotFoundError("Booking not found");
@@ -118,7 +148,10 @@ export function makeConfirmBooking(bookingRepo: BookingRepository, seatHold: Sea
 }
 
 /** Called by the payment module on payment failure, or by a lazy staleness check. */
-export function makeCancelBooking(bookingRepo: BookingRepository, seatHold: SeatHoldPort) {
+export function makeCancelBooking(
+  bookingRepo: BookingRepository,
+  seatHold: SeatHoldPort,
+) {
   return async (id: string, status: "cancelled" | "expired" = "cancelled") => {
     const booking = await bookingRepo.findById(id);
     if (!booking) throw new NotFoundError("Booking not found");

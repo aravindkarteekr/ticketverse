@@ -16,9 +16,14 @@ function retryQueuedRequests() {
 apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    const originalRequest = error.config as (InternalAxiosRequestConfig & { _retry?: boolean }) | undefined;
+    const originalRequest = error.config as
+      (InternalAxiosRequestConfig & { _retry?: boolean }) | undefined;
 
-    if (error.response?.status !== 401 || !originalRequest || originalRequest._retry) {
+    if (
+      error.response?.status !== 401 ||
+      !originalRequest ||
+      originalRequest._retry
+    ) {
       throw error;
     }
 

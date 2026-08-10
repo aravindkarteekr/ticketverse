@@ -4,7 +4,11 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { TheatreOwnerRequestsPanel } from "./TheatreOwnerRequestsPanel.js";
 import { MoviesAdminPanel } from "./MoviesAdminPanel.js";
-import { UsersAdminPanel, TheatresAdminPanel, BookingsAdminPanel } from "./OversightPanels.js";
+import {
+  UsersAdminPanel,
+  TheatresAdminPanel,
+  BookingsAdminPanel,
+} from "./OversightPanels.js";
 
 const TABS = [
   { label: "Theatre requests", component: <TheatreOwnerRequestsPanel /> },

@@ -4,6 +4,8 @@
  */
 export interface TheatreLookupPort {
   findTheatreIdsByCity(city: string): Promise<string[]>;
-  getScreenContext(screenId: string): Promise<{ theatreId: string; ownerId: string } | null>;
+  getScreenContext(
+    screenId: string,
+  ): Promise<{ theatreId: string; ownerId: string } | null>;
   getTheatreOwnerId(theatreId: string): Promise<string | null>;
 }

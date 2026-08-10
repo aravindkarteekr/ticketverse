@@ -22,13 +22,22 @@ export class MongoPaymentRepository implements PaymentRepository {
     return toEntity(doc);
   }
 
-  async findByStripePaymentIntentId(stripePaymentIntentId: string): Promise<PaymentEntity | null> {
+  async findByStripePaymentIntentId(
+    stripePaymentIntentId: string,
+  ): Promise<PaymentEntity | null> {
     const doc = await PaymentModel.findOne({ stripePaymentIntentId });
     return doc ? toEntity(doc) : null;
   }
 
-  async updateStatus(id: string, status: PaymentStatus): Promise<PaymentEntity | null> {
-    const doc = await PaymentModel.findByIdAndUpdate(id, { $set: { status } }, { new: true });
+  async updateStatus(
+    id: string,
+    status: PaymentStatus,
+  ): Promise<PaymentEntity | null> {
+    const doc = await PaymentModel.findByIdAndUpdate(
+      id,
+      { $set: { status } },
+      { new: true },
+    );
     return doc ? toEntity(doc) : null;
   }
 }

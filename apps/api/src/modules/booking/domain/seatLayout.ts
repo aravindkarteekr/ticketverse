@@ -7,7 +7,9 @@ export interface SeatLayoutRow {
 }
 
 /** Expands a screen's compact row layout into individual seatId -> seatType entries. */
-export function expandSeatLayout(layout: SeatLayoutRow[]): Map<string, SeatType> {
+export function expandSeatLayout(
+  layout: SeatLayoutRow[],
+): Map<string, SeatType> {
   const seatTypeBySeatId = new Map<string, SeatType>();
   for (const row of layout) {
     for (let seatNumber = 1; seatNumber <= row.seatCount; seatNumber += 1) {

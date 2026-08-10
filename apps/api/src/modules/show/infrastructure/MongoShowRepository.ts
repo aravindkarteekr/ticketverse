@@ -1,6 +1,14 @@
 import type { HydratedDocument } from "mongoose";
-import type { ShowRepository, ShowSearchParams } from "../domain/ports/ShowRepository.js";
-import type { NewShow, ShowEntity, ShowUpdate, SeatPricing } from "../domain/Show.js";
+import type {
+  ShowRepository,
+  ShowSearchParams,
+} from "../domain/ports/ShowRepository.js";
+import type {
+  NewShow,
+  ShowEntity,
+  ShowUpdate,
+  SeatPricing,
+} from "../domain/Show.js";
 import { ShowModel, type ShowDocument } from "./ShowModel.js";
 
 function toEntity(doc: HydratedDocument<ShowDocument>): ShowEntity {
@@ -10,9 +18,10 @@ function toEntity(doc: HydratedDocument<ShowDocument>): ShowEntity {
     screenId: doc.screenId.toString(),
     theatreId: doc.theatreId.toString(),
     startTime: doc.startTime,
-    pricing: doc.pricing.map(
-      (p): SeatPricing => ({ seatType: p.seatType as SeatPricing["seatType"], price: p.price }),
-    ),
+    pricing: doc.pricing.map((p): SeatPricing => ({
+      seatType: p.seatType as SeatPricing["seatType"],
+      price: p.price,
+    })),
     createdAt: doc.createdAt as unknown as Date,
   };
 }
@@ -29,7 +38,11 @@ export class MongoShowRepository implements ShowRepository {
   }
 
   async update(id: string, update: ShowUpdate): Promise<ShowEntity | null> {
-    const doc = await ShowModel.findByIdAndUpdate(id, { $set: update }, { new: true });
+    const doc = await ShowModel.findByIdAndUpdate(
+      id,
+      { $set: update },
+      { new: true },
+    );
     return doc ? toEntity(doc) : null;
   }
 
@@ -51,7 +64,10 @@ export class MongoShowRepository implements ShowRepository {
 
     const skip = (params.page - 1) * params.limit;
     const [docs, total] = await Promise.all([
-      ShowModel.find(filter).sort({ startTime: 1 }).skip(skip).limit(params.limit),
+      ShowModel.find(filter)
+        .sort({ startTime: 1 })
+        .skip(skip)
+        .limit(params.limit),
       ShowModel.countDocuments(filter),
     ]);
     return { items: docs.map(toEntity), total };

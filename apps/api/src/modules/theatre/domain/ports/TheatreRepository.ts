@@ -5,5 +5,8 @@ export interface TheatreRepository {
   findById(id: string): Promise<TheatreEntity | null>;
   findByOwnerId(ownerId: string): Promise<TheatreEntity[]>;
   update(id: string, update: TheatreUpdate): Promise<TheatreEntity | null>;
-  list(params: { page: number; limit: number }): Promise<{ items: TheatreEntity[]; total: number }>;
+  list(params: {
+    page: number;
+    limit: number;
+  }): Promise<{ items: TheatreEntity[]; total: number }>;
 }

@@ -25,7 +25,9 @@ function toEntity(
 }
 
 export class MongoTheatreOwnerRequestRepository implements TheatreOwnerRequestRepository {
-  async create(request: NewTheatreOwnerRequest): Promise<TheatreOwnerRequestEntity> {
+  async create(
+    request: NewTheatreOwnerRequest,
+  ): Promise<TheatreOwnerRequestEntity> {
     const doc = await TheatreOwnerRequestModel.create(request);
     return toEntity(doc);
   }
@@ -35,12 +37,19 @@ export class MongoTheatreOwnerRequestRepository implements TheatreOwnerRequestRe
     return doc ? toEntity(doc) : null;
   }
 
-  async listByStatus(status: TheatreOwnerRequestStatus): Promise<TheatreOwnerRequestEntity[]> {
-    const docs = await TheatreOwnerRequestModel.find({ status }).sort({ createdAt: -1 });
+  async listByStatus(
+    status: TheatreOwnerRequestStatus,
+  ): Promise<TheatreOwnerRequestEntity[]> {
+    const docs = await TheatreOwnerRequestModel.find({ status }).sort({
+      createdAt: -1,
+    });
     return docs.map(toEntity);
   }
 
-  async updateStatus(id: string, status: TheatreOwnerRequestStatus): Promise<void> {
+  async updateStatus(
+    id: string,
+    status: TheatreOwnerRequestStatus,
+  ): Promise<void> {
     await TheatreOwnerRequestModel.updateOne({ _id: id }, { $set: { status } });
   }
 }

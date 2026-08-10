@@ -35,8 +35,17 @@ export function LoginPage() {
       <Typography variant="h5" mb={3}>
         Log in
       </Typography>
-      {mutation.isError && <Alert severity="error" sx={{ mb: 2 }}>Invalid email or password.</Alert>}
-      <Box component="form" onSubmit={handleSubmit((input) => mutation.mutate(input))} display="grid" gap={2}>
+      {mutation.isError && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          Invalid email or password.
+        </Alert>
+      )}
+      <Box
+        component="form"
+        onSubmit={handleSubmit((input) => mutation.mutate(input))}
+        display="grid"
+        gap={2}
+      >
         <TextField
           label="Email"
           type="email"
@@ -56,7 +65,10 @@ export function LoginPage() {
         </Button>
       </Box>
       <Typography mt={2}>
-        No account? <Link component={RouterLink} to="/signup">Sign up</Link>
+        No account?{" "}
+        <Link component={RouterLink} to="/signup">
+          Sign up
+        </Link>
       </Typography>
     </Box>
   );

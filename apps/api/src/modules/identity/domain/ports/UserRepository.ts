@@ -8,5 +8,8 @@ export interface UserRepository {
   findByEmail(email: string): Promise<UserEntity | null>;
   updateRole(id: string, role: Role): Promise<void>;
   incrementTokenVersion(id: string): Promise<void>;
-  list(params: { page: number; limit: number }): Promise<{ items: UserEntity[]; total: number }>;
+  list(params: {
+    page: number;
+    limit: number;
+  }): Promise<{ items: UserEntity[]; total: number }>;
 }

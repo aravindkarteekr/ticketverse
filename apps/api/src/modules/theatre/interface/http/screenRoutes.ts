@@ -7,7 +7,11 @@ import { requireRole } from "../../../../shared/middleware/requireRole.js";
 import { asyncHandler } from "../../../../shared/middleware/asyncHandler.js";
 import { MongoScreenRepository } from "../../infrastructure/MongoScreenRepository.js";
 import { MongoTheatreRepository } from "../../infrastructure/MongoTheatreRepository.js";
-import { makeCreateScreen, makeDeleteScreen, makeListScreens } from "../../application/screenUseCases.js";
+import {
+  makeCreateScreen,
+  makeDeleteScreen,
+  makeListScreens,
+} from "../../application/screenUseCases.js";
 
 const theatreParamsSchema = z.object({ theatreId: objectIdSchema });
 const screenParamsSchema = z.object({ id: objectIdSchema });
@@ -24,7 +28,9 @@ screenRouter.get(
   "/theatres/:theatreId/screens",
   validate(theatreParamsSchema, "params"),
   asyncHandler(async (req, res) => {
-    const screens = await listScreens((req.params as { theatreId: string }).theatreId);
+    const screens = await listScreens(
+      (req.params as { theatreId: string }).theatreId,
+    );
     res.json(screens);
   }),
 );

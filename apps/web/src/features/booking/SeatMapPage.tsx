@@ -13,7 +13,9 @@ import { getSeatAvailability, holdSeats, createBooking } from "./bookingApi.js";
 const SEAT_ID_PATTERN = /^([A-Za-z]+)(\d+)$/;
 const MAX_SEATS = 10;
 
-function groupByRow(seats: SeatAvailability[]): Array<[string, SeatAvailability[]]> {
+function groupByRow(
+  seats: SeatAvailability[],
+): Array<[string, SeatAvailability[]]> {
   const rows = new Map<string, SeatAvailability[]>();
   for (const seat of seats) {
     const match = SEAT_ID_PATTERN.exec(seat.seatId);
@@ -36,7 +38,10 @@ export function SeatMapPage() {
   const { id: showId } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [selected, setSelected] = useState<string[]>([]);
-  const [hold, setHold] = useState<{ holdId: string; expiresAt: string } | null>(null);
+  const [hold, setHold] = useState<{
+    holdId: string;
+    expiresAt: string;
+  } | null>(null);
   const [conflict, setConflict] = useState<string[]>([]);
 
   const { data: seats, isLoading } = useQuery({
@@ -47,19 +52,30 @@ export function SeatMapPage() {
   });
 
   const rows = useMemo(() => groupByRow(seats ?? []), [seats]);
-  const priceBySeatId = useMemo(() => new Map(seats?.map((s) => [s.seatId, s.price]) ?? []), [seats]);
-  const total = selected.reduce((sum, seatId) => sum + (priceBySeatId.get(seatId) ?? 0), 0);
+  const priceBySeatId = useMemo(
+    () => new Map(seats?.map((s) => [s.seatId, s.price]) ?? []),
+    [seats],
+  );
+  const total = selected.reduce(
+    (sum, seatId) => sum + (priceBySeatId.get(seatId) ?? 0),
+    0,
+  );
 
   const holdMutation = useMutation({
     mutationFn: () => holdSeats(showId!, selected),
     onSuccess: (result) => {
       if (result.unavailableSeatIds.length > 0) {
         setConflict(result.unavailableSeatIds);
-        setSelected((prev) => prev.filter((seatId) => !result.unavailableSeatIds.includes(seatId)));
+        setSelected((prev) =>
+          prev.filter((seatId) => !result.unavailableSeatIds.includes(seatId)),
+        );
         return;
       }
       setConflict([]);
-      setHold({ holdId: result.holdId, expiresAt: result.expiresAt as unknown as string });
+      setHold({
+        holdId: result.holdId,
+        expiresAt: result.expiresAt as unknown as string,
+      });
     },
   });
 
@@ -71,7 +87,8 @@ export function SeatMapPage() {
   function toggleSeat(seat: SeatAvailability) {
     if (hold || seat.status !== "available") return;
     setSelected((prev) => {
-      if (prev.includes(seat.seatId)) return prev.filter((s) => s !== seat.seatId);
+      if (prev.includes(seat.seatId))
+        return prev.filter((s) => s !== seat.seatId);
       if (prev.length >= MAX_SEATS) return prev;
       return [...prev, seat.seatId];
     });
@@ -87,7 +104,8 @@ export function SeatMapPage() {
 
       {conflict.length > 0 && (
         <Alert severity="warning" sx={{ mb: 2 }}>
-          These seats were just taken by someone else: {conflict.join(", ")}. Please choose again.
+          These seats were just taken by someone else: {conflict.join(", ")}.
+          Please choose again.
         </Alert>
       )}
 
@@ -96,7 +114,9 @@ export function SeatMapPage() {
           <Stack key={row} direction="row" spacing={1} alignItems="center">
             <Typography width={24}>{row}</Typography>
             {rowSeats
-              .sort((a, b) => a.seatId.localeCompare(b.seatId, undefined, { numeric: true }))
+              .sort((a, b) =>
+                a.seatId.localeCompare(b.seatId, undefined, { numeric: true }),
+              )
               .map((seat) => (
                 <Box
                   key={seat.seatId}
@@ -109,9 +129,17 @@ export function SeatMapPage() {
                     alignItems: "center",
                     justifyContent: "center",
                     fontSize: 11,
-                    cursor: seat.status === "available" && !hold ? "pointer" : "default",
-                    bgcolor: seatColor(seat.status, selected.includes(seat.seatId)),
-                    color: selected.includes(seat.seatId) ? "white" : "text.primary",
+                    cursor:
+                      seat.status === "available" && !hold
+                        ? "pointer"
+                        : "default",
+                    bgcolor: seatColor(
+                      seat.status,
+                      selected.includes(seat.seatId),
+                    ),
+                    color: selected.includes(seat.seatId)
+                      ? "white"
+                      : "text.primary",
                   }}
                 >
                   {seat.seatId}
@@ -137,7 +165,8 @@ export function SeatMapPage() {
       ) : (
         <Stack spacing={1}>
           <Alert severity="info">
-            Seats held until {new Date(hold.expiresAt).toLocaleTimeString()} — confirm your booking before then.
+            Seats held until {new Date(hold.expiresAt).toLocaleTimeString()} —
+            confirm your booking before then.
           </Alert>
           <Button
             variant="contained"

@@ -8,9 +8,15 @@ import { MongoPaymentRepository } from "../../infrastructure/MongoPaymentReposit
 import type { BookingConfirmationPort } from "../../domain/ports/BookingConfirmationPort.js";
 import { makeCreatePaymentIntent } from "../../application/paymentUseCases.js";
 
-export function createPaymentRouter(bookingConfirmation: BookingConfirmationPort): Router {
+export function createPaymentRouter(
+  bookingConfirmation: BookingConfirmationPort,
+): Router {
   const paymentRepo = new MongoPaymentRepository();
-  const createPaymentIntent = makeCreatePaymentIntent(paymentRepo, bookingConfirmation, stripe);
+  const createPaymentIntent = makeCreatePaymentIntent(
+    paymentRepo,
+    bookingConfirmation,
+    stripe,
+  );
 
   const router = Router();
 

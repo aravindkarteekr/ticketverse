@@ -8,7 +8,10 @@ import ListItemText from "@mui/material/ListItemText";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import CircularProgress from "@mui/material/CircularProgress";
-import { listPendingTheatreOwnerRequests, reviewTheatreOwnerRequest } from "./adminApi.js";
+import {
+  listPendingTheatreOwnerRequests,
+  reviewTheatreOwnerRequest,
+} from "./adminApi.js";
 
 export function TheatreOwnerRequestsPanel() {
   const queryClient = useQueryClient();
@@ -20,12 +23,19 @@ export function TheatreOwnerRequestsPanel() {
   });
 
   const reviewMutation = useMutation({
-    mutationFn: ({ id, decision }: { id: string; decision: "approved" | "rejected" }) =>
-      reviewTheatreOwnerRequest(id, { decision }),
+    mutationFn: ({
+      id,
+      decision,
+    }: {
+      id: string;
+      decision: "approved" | "rejected";
+    }) => reviewTheatreOwnerRequest(id, { decision }),
     onMutate: ({ id }) => setPendingId(id),
     onSettled: () => {
       setPendingId(null);
-      queryClient.invalidateQueries({ queryKey: ["admin", "theatre-owner-requests"] });
+      queryClient.invalidateQueries({
+        queryKey: ["admin", "theatre-owner-requests"],
+      });
     },
   });
 
@@ -36,7 +46,9 @@ export function TheatreOwnerRequestsPanel() {
       <Typography variant="h6" mb={2}>
         Pending theatre-owner requests
       </Typography>
-      {requests?.length === 0 && <Typography color="text.secondary">Nothing pending.</Typography>}
+      {requests?.length === 0 && (
+        <Typography color="text.secondary">Nothing pending.</Typography>
+      )}
       <List>
         {requests?.map((request) => (
           <ListItem key={request.id} divider>
@@ -50,7 +62,12 @@ export function TheatreOwnerRequestsPanel() {
                 variant="contained"
                 color="success"
                 disabled={reviewMutation.isPending && pendingId === request.id}
-                onClick={() => reviewMutation.mutate({ id: request.id, decision: "approved" })}
+                onClick={() =>
+                  reviewMutation.mutate({
+                    id: request.id,
+                    decision: "approved",
+                  })
+                }
               >
                 Approve
               </Button>
@@ -59,7 +76,12 @@ export function TheatreOwnerRequestsPanel() {
                 variant="outlined"
                 color="error"
                 disabled={reviewMutation.isPending && pendingId === request.id}
-                onClick={() => reviewMutation.mutate({ id: request.id, decision: "rejected" })}
+                onClick={() =>
+                  reviewMutation.mutate({
+                    id: request.id,
+                    decision: "rejected",
+                  })
+                }
               >
                 Reject
               </Button>

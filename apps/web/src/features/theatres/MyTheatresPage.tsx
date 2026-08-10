@@ -18,7 +18,8 @@ function TheatreCard({ theatre }: { theatre: Theatre }) {
   const [address, setAddress] = useState(theatre.address);
   const mutation = useMutation({
     mutationFn: () => updateTheatre(theatre.id, { address }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["myTheatres"] }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["myTheatres"] }),
   });
 
   return (
@@ -37,13 +38,25 @@ function TheatreCard({ theatre }: { theatre: Theatre }) {
         />
       </CardContent>
       <CardActions>
-        <Button size="small" onClick={() => mutation.mutate()} disabled={mutation.isPending}>
+        <Button
+          size="small"
+          onClick={() => mutation.mutate()}
+          disabled={mutation.isPending}
+        >
           Save address
         </Button>
-        <Button size="small" component={RouterLink} to={`/theatres/${theatre.id}/screens`}>
+        <Button
+          size="small"
+          component={RouterLink}
+          to={`/theatres/${theatre.id}/screens`}
+        >
           Manage screens
         </Button>
-        <Button size="small" component={RouterLink} to={`/theatres/${theatre.id}/shows`}>
+        <Button
+          size="small"
+          component={RouterLink}
+          to={`/theatres/${theatre.id}/shows`}
+        >
           Schedule shows
         </Button>
       </CardActions>
@@ -52,7 +65,10 @@ function TheatreCard({ theatre }: { theatre: Theatre }) {
 }
 
 export function MyTheatresPage() {
-  const { data: theatres, isLoading } = useQuery({ queryKey: ["myTheatres"], queryFn: listMyTheatres });
+  const { data: theatres, isLoading } = useQuery({
+    queryKey: ["myTheatres"],
+    queryFn: listMyTheatres,
+  });
 
   return (
     <Box maxWidth={700} mx="auto" mt={4} px={2}>
@@ -65,7 +81,9 @@ export function MyTheatresPage() {
           <TheatreCard key={theatre.id} theatre={theatre} />
         ))}
       </Stack>
-      {!isLoading && theatres?.length === 0 && <Typography>No theatres yet.</Typography>}
+      {!isLoading && theatres?.length === 0 && (
+        <Typography>No theatres yet.</Typography>
+      )}
     </Box>
   );
 }

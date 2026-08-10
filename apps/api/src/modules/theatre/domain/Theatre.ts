@@ -8,4 +8,6 @@ export interface TheatreEntity {
 }
 
 export type NewTheatre = Omit<TheatreEntity, "id" | "createdAt">;
-export type TheatreUpdate = Partial<Pick<TheatreEntity, "name" | "city" | "address">>;
+export type TheatreUpdate = Partial<
+  Pick<TheatreEntity, "name" | "city" | "address">
+>;

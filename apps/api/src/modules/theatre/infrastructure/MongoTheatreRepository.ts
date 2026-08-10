@@ -1,6 +1,10 @@
 import type { HydratedDocument } from "mongoose";
 import type { TheatreRepository } from "../domain/ports/TheatreRepository.js";
-import type { NewTheatre, TheatreEntity, TheatreUpdate } from "../domain/Theatre.js";
+import type {
+  NewTheatre,
+  TheatreEntity,
+  TheatreUpdate,
+} from "../domain/Theatre.js";
 import { TheatreModel, type TheatreDocument } from "./TheatreModel.js";
 
 function toEntity(doc: HydratedDocument<TheatreDocument>): TheatreEntity {
@@ -30,15 +34,25 @@ export class MongoTheatreRepository implements TheatreRepository {
     return docs.map(toEntity);
   }
 
-  async update(id: string, update: TheatreUpdate): Promise<TheatreEntity | null> {
-    const doc = await TheatreModel.findByIdAndUpdate(id, { $set: update }, { new: true });
+  async update(
+    id: string,
+    update: TheatreUpdate,
+  ): Promise<TheatreEntity | null> {
+    const doc = await TheatreModel.findByIdAndUpdate(
+      id,
+      { $set: update },
+      { new: true },
+    );
     return doc ? toEntity(doc) : null;
   }
 
   async list(params: { page: number; limit: number }) {
     const skip = (params.page - 1) * params.limit;
     const [docs, total] = await Promise.all([
-      TheatreModel.find().sort({ createdAt: -1 }).skip(skip).limit(params.limit),
+      TheatreModel.find()
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(params.limit),
       TheatreModel.countDocuments(),
     ]);
     return { items: docs.map(toEntity), total };

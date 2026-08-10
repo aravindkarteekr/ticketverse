@@ -1,5 +1,10 @@
 import { NotFoundError } from "../../../shared/errors/AppError.js";
-import type { CreateMovieInput, UpdateMovieInput, MovieSearchQuery, PaginationQuery } from "@ticketverse/schemas";
+import type {
+  CreateMovieInput,
+  UpdateMovieInput,
+  MovieSearchQuery,
+  PaginationQuery,
+} from "@ticketverse/schemas";
 import type { MovieRepository } from "../domain/ports/MovieRepository.js";
 
 export function makeCreateMovie(movieRepo: MovieRepository) {

@@ -4,7 +4,11 @@ const seatLayoutRowSchema = new Schema(
   {
     row: { type: String, required: true },
     seatCount: { type: Number, required: true, min: 1 },
-    seatType: { type: String, enum: ["regular", "premium", "recliner"], required: true },
+    seatType: {
+      type: String,
+      enum: ["regular", "premium", "recliner"],
+      required: true,
+    },
   },
   { _id: false },
 );

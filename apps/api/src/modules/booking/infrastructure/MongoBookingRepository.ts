@@ -31,7 +31,10 @@ export class MongoBookingRepository implements BookingRepository {
   async findByUserId(userId: string, params: { page: number; limit: number }) {
     const skip = (params.page - 1) * params.limit;
     const [docs, total] = await Promise.all([
-      BookingModel.find({ userId }).sort({ createdAt: -1 }).skip(skip).limit(params.limit),
+      BookingModel.find({ userId })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(params.limit),
       BookingModel.countDocuments({ userId }),
     ]);
     return { items: docs.map(toEntity), total };
@@ -40,19 +43,32 @@ export class MongoBookingRepository implements BookingRepository {
   async list(params: { page: number; limit: number }) {
     const skip = (params.page - 1) * params.limit;
     const [docs, total] = await Promise.all([
-      BookingModel.find().sort({ createdAt: -1 }).skip(skip).limit(params.limit),
+      BookingModel.find()
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(params.limit),
       BookingModel.countDocuments(),
     ]);
     return { items: docs.map(toEntity), total };
   }
 
-  async updateStatus(id: string, status: BookingStatus): Promise<BookingEntity | null> {
-    const doc = await BookingModel.findByIdAndUpdate(id, { $set: { status } }, { new: true });
+  async updateStatus(
+    id: string,
+    status: BookingStatus,
+  ): Promise<BookingEntity | null> {
+    const doc = await BookingModel.findByIdAndUpdate(
+      id,
+      { $set: { status } },
+      { new: true },
+    );
     return doc ? toEntity(doc) : null;
   }
 
   async findBookedSeatIds(showId: string): Promise<string[]> {
-    const docs = await BookingModel.find({ showId, status: "confirmed" }).select("seatIds");
+    const docs = await BookingModel.find({
+      showId,
+      status: "confirmed",
+    }).select("seatIds");
     return docs.flatMap((d) => d.seatIds);
   }
 }

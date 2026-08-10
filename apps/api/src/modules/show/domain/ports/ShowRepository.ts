@@ -13,6 +13,8 @@ export interface ShowRepository {
   findById(id: string): Promise<ShowEntity | null>;
   update(id: string, update: ShowUpdate): Promise<ShowEntity | null>;
   delete(id: string): Promise<void>;
-  search(params: ShowSearchParams): Promise<{ items: ShowEntity[]; total: number }>;
+  search(
+    params: ShowSearchParams,
+  ): Promise<{ items: ShowEntity[]; total: number }>;
   findByTheatreId(theatreId: string): Promise<ShowEntity[]>;
 }

@@ -4,14 +4,18 @@ import { objectIdSchema } from "./common.schema.js";
 export const createPaymentIntentSchema = z.object({
   bookingId: objectIdSchema,
 });
-export type CreatePaymentIntentInput = z.infer<typeof createPaymentIntentSchema>;
+export type CreatePaymentIntentInput = z.infer<
+  typeof createPaymentIntentSchema
+>;
 
 export const createPaymentIntentResponseSchema = z.object({
   clientSecret: z.string(),
   amount: z.number().positive(),
   currency: z.string().length(3),
 });
-export type CreatePaymentIntentResponse = z.infer<typeof createPaymentIntentResponseSchema>;
+export type CreatePaymentIntentResponse = z.infer<
+  typeof createPaymentIntentResponseSchema
+>;
 
 export const paymentStatusSchema = z.enum(["pending", "succeeded", "failed"]);
 export type PaymentStatus = z.infer<typeof paymentStatusSchema>;

@@ -28,13 +28,26 @@ import {
 const showParamsSchema = z.object({ showId: objectIdSchema });
 const bookingParamsSchema = z.object({ id: objectIdSchema });
 
-export function createBookingRouter(showLookup: ShowLookupPort, screenLookup: ScreenLookupPort): Router {
+export function createBookingRouter(
+  showLookup: ShowLookupPort,
+  screenLookup: ScreenLookupPort,
+): Router {
   const bookingRepo = new MongoBookingRepository();
   const seatHold = new RedisSeatHoldAdapter(redis);
 
-  const getSeatAvailability = makeGetSeatAvailability(bookingRepo, showLookup, screenLookup, seatHold);
+  const getSeatAvailability = makeGetSeatAvailability(
+    bookingRepo,
+    showLookup,
+    screenLookup,
+    seatHold,
+  );
   const holdSeats = makeHoldSeats(seatHold, showLookup);
-  const createBooking = makeCreateBooking(bookingRepo, showLookup, screenLookup, seatHold);
+  const createBooking = makeCreateBooking(
+    bookingRepo,
+    showLookup,
+    screenLookup,
+    seatHold,
+  );
   const getBooking = makeGetBooking(bookingRepo);
   const listMyBookings = makeListMyBookings(bookingRepo);
   const listAllBookings = makeListAllBookings(bookingRepo);
@@ -45,7 +58,9 @@ export function createBookingRouter(showLookup: ShowLookupPort, screenLookup: Sc
     "/shows/:showId/seats",
     validate(showParamsSchema, "params"),
     asyncHandler(async (req, res) => {
-      const seats = await getSeatAvailability((req.params as { showId: string }).showId);
+      const seats = await getSeatAvailability(
+        (req.params as { showId: string }).showId,
+      );
       res.json(seats);
     }),
   );
@@ -55,7 +70,10 @@ export function createBookingRouter(showLookup: ShowLookupPort, screenLookup: Sc
     authenticate,
     validate(holdSeatsSchema),
     asyncHandler(async (req, res) => {
-      const { showId, seatIds } = req.body as { showId: string; seatIds: string[] };
+      const { showId, seatIds } = req.body as {
+        showId: string;
+        seatIds: string[];
+      };
       const result = await holdSeats(showId, seatIds);
       res.status(result.unavailableSeatIds.length > 0 ? 409 : 201).json(result);
     }),
@@ -71,7 +89,12 @@ export function createBookingRouter(showLookup: ShowLookupPort, screenLookup: Sc
         holdId: string;
         seatIds: string[];
       };
-      const booking = await createBooking(req.user!.id, showId, holdId, seatIds);
+      const booking = await createBooking(
+        req.user!.id,
+        showId,
+        holdId,
+        seatIds,
+      );
       res.status(201).json(booking);
     }),
   );

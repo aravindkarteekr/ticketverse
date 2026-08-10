@@ -19,7 +19,8 @@ export function signAccessToken(payload: AccessTokenPayload): string {
 }
 
 export function verifyAccessToken(token: string): AccessTokenPayload {
-  return jwt.verify(token, env.JWT_ACCESS_SECRET) as AccessTokenPayload & jwt.JwtPayload;
+  return jwt.verify(token, env.JWT_ACCESS_SECRET) as AccessTokenPayload &
+    jwt.JwtPayload;
 }
 
 export function signRefreshToken(payload: RefreshTokenPayload): string {
@@ -29,5 +30,6 @@ export function signRefreshToken(payload: RefreshTokenPayload): string {
 }
 
 export function verifyRefreshToken(token: string): RefreshTokenPayload {
-  return jwt.verify(token, env.JWT_REFRESH_SECRET) as RefreshTokenPayload & jwt.JwtPayload;
+  return jwt.verify(token, env.JWT_REFRESH_SECRET) as RefreshTokenPayload &
+    jwt.JwtPayload;
 }
