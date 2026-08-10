@@ -11,8 +11,9 @@ import { MyTheatresPage } from "../features/theatres/MyTheatresPage.js";
 import { TheatreScreensPage } from "../features/theatres/TheatreScreensPage.js";
 import { SeatMapPage } from "../features/booking/SeatMapPage.js";
 import { MyBookingsPage } from "../features/booking/MyBookingsPage.js";
+import { PaymentPage } from "../features/payment/PaymentPage.js";
 
-/** Feature routes (payment, admin) are added as each feature is built. */
+/** Feature routes (admin) are added as each feature is built. */
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -29,6 +30,7 @@ export const router = createBrowserRouter([
           { path: "theatres/request", element: <RequestTheatreOwnerPage /> },
           { path: "shows/:id", element: <SeatMapPage /> },
           { path: "bookings/mine", element: <MyBookingsPage /> },
+          { path: "payment/:bookingId", element: <PaymentPage /> },
         ],
       },
       {
