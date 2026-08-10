@@ -43,6 +43,9 @@ function TheatreCard({ theatre }: { theatre: Theatre }) {
         <Button size="small" component={RouterLink} to={`/theatres/${theatre.id}/screens`}>
           Manage screens
         </Button>
+        <Button size="small" component={RouterLink} to={`/theatres/${theatre.id}/shows`}>
+          Schedule shows
+        </Button>
       </CardActions>
     </Card>
   );

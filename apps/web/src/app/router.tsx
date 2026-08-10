@@ -9,6 +9,7 @@ import { MovieDetailPage } from "../features/movies/MovieDetailPage.js";
 import { RequestTheatreOwnerPage } from "../features/theatres/RequestTheatreOwnerPage.js";
 import { MyTheatresPage } from "../features/theatres/MyTheatresPage.js";
 import { TheatreScreensPage } from "../features/theatres/TheatreScreensPage.js";
+import { TheatreShowsPage } from "../features/theatres/TheatreShowsPage.js";
 import { SeatMapPage } from "../features/booking/SeatMapPage.js";
 import { MyBookingsPage } from "../features/booking/MyBookingsPage.js";
 import { PaymentPage } from "../features/payment/PaymentPage.js";
@@ -38,6 +39,7 @@ export const router = createBrowserRouter([
         children: [
           { path: "theatres/mine", element: <MyTheatresPage /> },
           { path: "theatres/:theatreId/screens", element: <TheatreScreensPage /> },
+          { path: "theatres/:theatreId/shows", element: <TheatreShowsPage /> },
         ],
       },
       {
