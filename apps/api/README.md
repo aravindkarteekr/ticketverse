@@ -145,11 +145,11 @@ shows over the next couple of days. It's idempotent — safe to re-run at any ti
 seeded documents are updated in place rather than duplicated), and it refuses to run when
 `NODE_ENV=production`. Test accounts (all share the same password):
 
-| Role            | Email                     | Password       |
-| --------------- | -------------------------- | -------------- |
-| `admin`         | `admin@ticketverse.dev`   | `Password@123` |
-| `theatre_owner` | `owner@ticketverse.dev`   | `Password@123` |
-| `user`          | `user@ticketverse.dev`    | `Password@123` |
-| `user`          | `jack@ticketverse.dev`    | `Password@123` |
+| Role            | Email                   | Password       |
+| --------------- | ----------------------- | -------------- |
+| `admin`         | `admin@ticketverse.dev` | `Password@123` |
+| `theatre_owner` | `owner@ticketverse.dev` | `Password@123` |
+| `user`          | `user@ticketverse.dev`  | `Password@123` |
+| `user`          | `jack@ticketverse.dev`  | `Password@123` |
 
 Override the password with the `SEED_PASSWORD` env var if you'd rather not use the default.
