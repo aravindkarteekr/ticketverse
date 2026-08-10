@@ -130,3 +130,26 @@ webhook testing, forward events with the Stripe CLI:
 ```bash
 stripe listen --forward-to localhost:4000/api/v1/payments/webhook
 ```
+
+## Seed data
+
+To try out the app without manually signing up and clicking through the admin-approval /
+show-scheduling flow first, populate the database with a small demo dataset:
+
+```bash
+npm run seed --workspace=@ticketverse/api   # or: npx turbo run seed --filter=@ticketverse/api
+```
+
+This upserts one user per role, 3 movies, a theatre with 2 screens, and a handful of upcoming
+shows over the next couple of days. It's idempotent — safe to re-run at any time (existing
+seeded documents are updated in place rather than duplicated), and it refuses to run when
+`NODE_ENV=production`. Test accounts (all share the same password):
+
+| Role            | Email                     | Password       |
+| --------------- | -------------------------- | -------------- |
+| `admin`         | `admin@ticketverse.dev`   | `Password@123` |
+| `theatre_owner` | `owner@ticketverse.dev`   | `Password@123` |
+| `user`          | `user@ticketverse.dev`    | `Password@123` |
+| `user`          | `jack@ticketverse.dev`    | `Password@123` |
+
+Override the password with the `SEED_PASSWORD` env var if you'd rather not use the default.

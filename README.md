@@ -1,12 +1,9 @@
 # TicketVerse
 
-TicketVerse is a full-stack, BookMyShow-style movie ticket booking platform, built as an academic
-MERN-stack (MongoDB, Express, React, Node.js) project. It supports movie/showtime browsing, seat-map
-selection with Redis-backed concurrency-safe holds, Stripe checkout, and role-based dashboards for
-regular users, theatre owners, and admins.
-
-> Renamed from "BookMyShow Clone" to **TicketVerse** to avoid trademark/legal issues with the real
-> BookMyShow brand. This is an independent academic project, not affiliated with BookMyShow.
+TicketVerse is a full-stack movie ticket booking platform, built as an academic MERN-stack
+(MongoDB, Express, React, Node.js) project. It supports movie/showtime browsing, seat-map selection
+with Redis-backed concurrency-safe holds, Stripe checkout, and role-based dashboards for regular
+users, theatre owners, and admins.
 
 ## Tech stack
 
@@ -139,6 +136,18 @@ cp apps/web/.env.example apps/web/.env
 
 npm run dev        # runs both apps/api (port 4000) and apps/web (port 5173) via Turborepo
 ```
+
+### Try it out with seed data
+
+Populate the database with demo users (one per role), movies, a theatre, and upcoming shows:
+
+```bash
+npm run seed --workspace=@ticketverse/api
+```
+
+See [apps/api/README.md](apps/api/README.md#seed-data) for the full list of test accounts —
+they all share the same password so you can log in immediately as an admin, theatre owner, or
+regular user without going through signup/approval first.
 
 ### Common scripts (run from the repo root, orchestrated by Turborepo)
 
