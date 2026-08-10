@@ -9,8 +9,10 @@ import { MovieDetailPage } from "../features/movies/MovieDetailPage.js";
 import { RequestTheatreOwnerPage } from "../features/theatres/RequestTheatreOwnerPage.js";
 import { MyTheatresPage } from "../features/theatres/MyTheatresPage.js";
 import { TheatreScreensPage } from "../features/theatres/TheatreScreensPage.js";
+import { SeatMapPage } from "../features/booking/SeatMapPage.js";
+import { MyBookingsPage } from "../features/booking/MyBookingsPage.js";
 
-/** Feature routes (booking, payment, admin) are added as each feature is built. */
+/** Feature routes (payment, admin) are added as each feature is built. */
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -23,7 +25,11 @@ export const router = createBrowserRouter([
       { path: "movies/:id", element: <MovieDetailPage /> },
       {
         element: <ProtectedRoute />,
-        children: [{ path: "theatres/request", element: <RequestTheatreOwnerPage /> }],
+        children: [
+          { path: "theatres/request", element: <RequestTheatreOwnerPage /> },
+          { path: "shows/:id", element: <SeatMapPage /> },
+          { path: "bookings/mine", element: <MyBookingsPage /> },
+        ],
       },
       {
         element: <ProtectedRoute allowedRoles={["theatre_owner"]} />,

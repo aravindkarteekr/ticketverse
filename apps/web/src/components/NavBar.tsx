@@ -32,6 +32,11 @@ export function NavBar() {
           <Button color="inherit" component={RouterLink} to="/movies">
             Movies
           </Button>
+          {user && (
+            <Button color="inherit" component={RouterLink} to="/bookings/mine">
+              My bookings
+            </Button>
+          )}
           {user?.role === "theatre_owner" && (
             <Button color="inherit" component={RouterLink} to="/theatres/mine">
               My theatres
