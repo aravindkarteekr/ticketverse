@@ -47,6 +47,11 @@ export function NavBar() {
               Become an owner
             </Button>
           )}
+          {user?.role === "admin" && (
+            <Button color="inherit" component={RouterLink} to="/admin">
+              Admin
+            </Button>
+          )}
           {user ? (
             <>
               <Typography variant="body2">{user.name}</Typography>

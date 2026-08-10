@@ -12,8 +12,8 @@ import { TheatreScreensPage } from "../features/theatres/TheatreScreensPage.js";
 import { SeatMapPage } from "../features/booking/SeatMapPage.js";
 import { MyBookingsPage } from "../features/booking/MyBookingsPage.js";
 import { PaymentPage } from "../features/payment/PaymentPage.js";
+import { AdminDashboardPage } from "../features/admin/AdminDashboardPage.js";
 
-/** Feature routes (admin) are added as each feature is built. */
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -39,6 +39,10 @@ export const router = createBrowserRouter([
           { path: "theatres/mine", element: <MyTheatresPage /> },
           { path: "theatres/:theatreId/screens", element: <TheatreScreensPage /> },
         ],
+      },
+      {
+        element: <ProtectedRoute allowedRoles={["admin"]} />,
+        children: [{ path: "admin", element: <AdminDashboardPage /> }],
       },
     ],
   },
