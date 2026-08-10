@@ -12,15 +12,22 @@ const { getSeatAvailability, holdSeats, createBooking } = vi.hoisted(() => ({
   createBooking: vi.fn(),
 }));
 
-vi.mock("./bookingApi.js", () => ({ getSeatAvailability, holdSeats, createBooking }));
+vi.mock("./bookingApi.js", () => ({
+  getSeatAvailability,
+  holdSeats,
+  createBooking,
+}));
 
 // 11 available seats in row A so we can verify the MAX_SEATS=10 client-side cap.
-const elevenAvailableSeats: SeatAvailability[] = Array.from({ length: 11 }, (_, i) => ({
-  seatId: `A${i + 1}`,
-  seatType: "regular",
-  price: 100,
-  status: "available",
-}));
+const elevenAvailableSeats: SeatAvailability[] = Array.from(
+  { length: 11 },
+  (_, i) => ({
+    seatId: `A${i + 1}`,
+    seatType: "regular",
+    price: 100,
+    status: "available",
+  }),
+);
 
 function renderSeatMap() {
   const queryClient = new QueryClient({
@@ -65,7 +72,9 @@ describe("SeatMapPage seat selection logic", () => {
     }
 
     const selectedText = screen.getByText(/^Selected: /).textContent ?? "";
-    const selectedCount = selectedText.replace("Selected: ", "").split(", ").length;
+    const selectedCount = selectedText
+      .replace("Selected: ", "")
+      .split(", ").length;
     expect(selectedCount).toBe(10);
     expect(selectedText).not.toContain("A11");
   });

@@ -14,7 +14,11 @@ const { loginRequest, signupRequest } = vi.hoisted(() => ({
   signupRequest: vi.fn(),
 }));
 
-vi.mock("./authApi.js", () => ({ loginRequest, signupRequest, logoutRequest: vi.fn() }));
+vi.mock("./authApi.js", () => ({
+  loginRequest,
+  signupRequest,
+  logoutRequest: vi.fn(),
+}));
 
 function renderWithProviders(ui: React.ReactElement) {
   const store = configureStore({ reducer: { auth: authReducer } });
@@ -42,7 +46,12 @@ describe("LoginPage validation", () => {
   });
 
   it("calls loginRequest with valid, normalized input", async () => {
-    loginRequest.mockResolvedValue({ id: "1", name: "A", email: "a@example.com", role: "user" });
+    loginRequest.mockResolvedValue({
+      id: "1",
+      name: "A",
+      email: "a@example.com",
+      role: "user",
+    });
     const user = userEvent.setup();
     renderWithProviders(<LoginPage />);
 
@@ -51,7 +60,10 @@ describe("LoginPage validation", () => {
     await user.click(screen.getByRole("button", { name: /log in/i }));
 
     await vi.waitFor(() => expect(loginRequest).toHaveBeenCalled());
-    expect(loginRequest.mock.calls[0]?.[0]).toEqual({ email: "a@example.com", password: "secret123" });
+    expect(loginRequest.mock.calls[0]?.[0]).toEqual({
+      email: "a@example.com",
+      password: "secret123",
+    });
   });
 });
 
@@ -65,12 +77,19 @@ describe("SignupPage validation", () => {
     await user.type(screen.getByLabelText(/password/i), "short");
     await user.click(screen.getByRole("button", { name: /sign up/i }));
 
-    expect(await screen.findByText(/at least 8 characters/i)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/at least 8 characters/i),
+    ).toBeInTheDocument();
     expect(signupRequest).not.toHaveBeenCalled();
   });
 
   it("submits valid signup input", async () => {
-    signupRequest.mockResolvedValue({ id: "1", name: "Alice", email: "alice@example.com", role: "user" });
+    signupRequest.mockResolvedValue({
+      id: "1",
+      name: "Alice",
+      email: "alice@example.com",
+      role: "user",
+    });
     const user = userEvent.setup();
     renderWithProviders(<SignupPage />);
 

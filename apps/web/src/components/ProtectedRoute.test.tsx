@@ -9,7 +9,10 @@ import { ProtectedRoute } from "./ProtectedRoute.js";
 
 type AuthState = ReturnType<typeof authReducer>;
 
-function renderProtected(authState: AuthState, allowedRoles?: AuthUser["role"][]) {
+function renderProtected(
+  authState: AuthState,
+  allowedRoles?: AuthUser["role"][],
+) {
   const store = configureStore({
     reducer: { auth: authReducer },
     preloadedState: { auth: authState },
