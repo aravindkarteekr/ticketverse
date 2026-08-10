@@ -88,13 +88,11 @@ describe("booking flow (happy path + seat-hold conflict)", () => {
     const showId = showRes.body.id as string;
 
     const bookerAgent = request.agent(app);
-    await bookerAgent
-      .post("/api/v1/auth/signup")
-      .send({
-        name: "Booker",
-        email: "booker@example.com",
-        password: "BookerPass123!",
-      });
+    await bookerAgent.post("/api/v1/auth/signup").send({
+      name: "Booker",
+      email: "booker@example.com",
+      password: "BookerPass123!",
+    });
 
     const seatsRes = await bookerAgent.get(`/api/v1/shows/${showId}/seats`);
     expect(seatsRes.status).toBe(200);
@@ -113,13 +111,11 @@ describe("booking flow (happy path + seat-hold conflict)", () => {
 
     // A second, concurrent user tries to grab an overlapping seat — must be rejected.
     const rivalAgent = request.agent(app);
-    await rivalAgent
-      .post("/api/v1/auth/signup")
-      .send({
-        name: "Rival",
-        email: "rival@example.com",
-        password: "RivalPass123!",
-      });
+    await rivalAgent.post("/api/v1/auth/signup").send({
+      name: "Rival",
+      email: "rival@example.com",
+      password: "RivalPass123!",
+    });
     const rivalHoldRes = await rivalAgent
       .post("/api/v1/bookings/hold")
       .send({ showId, seatIds: ["A1", "A3"] });
