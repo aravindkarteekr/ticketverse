@@ -1,0 +1,43 @@
+# Render Blueprint for the TicketVerse API.
+# Deploy: connect this repo in the Render dashboard and it will detect this file.
+# Secrets (marked sync: false) must be entered in the Render dashboard, never committed.
+services:
+  - type: web
+    name: ticketverse-api
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: .
+    buildCommand: npm install && npx turbo run build --filter=@ticketverse/api
+    startCommand: node apps/api/dist/server.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "4000"
+      # Set to the live Netlify URL once known (e.g. https://ticketverse.netlify.app).
+      - key: CLIENT_ORIGIN
+        sync: false
+      # mongodb+srv://... connection string from MongoDB Atlas.
+      - key: MONGODB_URI
+        sync: false
+      # rediss://... connection string from Upstash.
+      - key: REDIS_URL
+        sync: false
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: JWT_ACCESS_TTL
+        value: 15m
+      - key: JWT_REFRESH_TTL
+        value: 7d
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: PAYMENT_CURRENCY
+        value: usd

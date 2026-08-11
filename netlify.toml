@@ -1,0 +1,15 @@
+# Netlify build config for the TicketVerse frontend (apps/web).
+# Deploy: connect this repo in the Netlify dashboard; it auto-detects this file.
+# Runs from the repo root (not apps/web) so npm workspace hoisting resolves @ticketverse/schemas.
+[build]
+  command = "npm install && npx turbo run build --filter=@ticketverse/web"
+  publish = "apps/web/dist"
+
+# VITE_API_BASE_URL and VITE_STRIPE_PUBLISHABLE_KEY must be set in the Netlify dashboard
+# (Site configuration > Environment variables), not committed here.
+
+# React Router client-side routes need every path to fall back to index.html.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
