@@ -9,13 +9,15 @@ import ListItemText from "@mui/material/ListItemText";
 import Chip from "@mui/material/Chip";
 import Pagination from "@mui/material/Pagination";
 import CircularProgress from "@mui/material/CircularProgress";
+import { ErrorState } from "../../components/ErrorState.js";
+import { EmptyState } from "../../components/EmptyState.js";
 import { listMyBookings } from "./bookingApi.js";
 
 const PAGE_SIZE = 10;
 
 export function MyBookingsPage() {
   const [page, setPage] = useState(1);
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["my-bookings", page],
     queryFn: () => listMyBookings({ page, limit: PAGE_SIZE }),
   });
@@ -26,7 +28,11 @@ export function MyBookingsPage() {
         My bookings
       </Typography>
       {isLoading && <CircularProgress />}
-      {data && (
+      {isError && <ErrorState error={error} onRetry={() => refetch()} />}
+      {!isLoading && !isError && data?.items.length === 0 && (
+        <EmptyState message="You haven't booked any tickets yet." />
+      )}
+      {data && data.items.length > 0 && (
         <>
           <List>
             {data.items.map((booking) => (

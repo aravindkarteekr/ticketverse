@@ -10,6 +10,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
+import { ErrorState } from "../../components/ErrorState.js";
+import { EmptyState } from "../../components/EmptyState.js";
 import { getMovie } from "./moviesApi.js";
 import { searchShows } from "./showsApi.js";
 import { getTheatre } from "../theatres/theatresApi.js";
@@ -44,19 +46,38 @@ export function MovieDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [city, setCity] = useState("");
 
-  const { data: movie, isLoading: isMovieLoading } = useQuery({
+  const {
+    data: movie,
+    isLoading: isMovieLoading,
+    isError: isMovieError,
+    error: movieError,
+    refetch: refetchMovie,
+  } = useQuery({
     queryKey: ["movie", id],
     queryFn: () => getMovie(id!),
     enabled: !!id,
   });
 
-  const { data: shows, isLoading: isShowsLoading } = useQuery({
+  const {
+    data: shows,
+    isLoading: isShowsLoading,
+    isError: isShowsError,
+    error: showsError,
+    refetch: refetchShows,
+  } = useQuery({
     queryKey: ["shows", id, city],
     queryFn: () => searchShows({ movieId: id, city: city || undefined }),
     enabled: !!id,
   });
 
   if (isMovieLoading) return <CircularProgress sx={{ m: 4 }} />;
+  if (isMovieError) {
+    return (
+      <Box maxWidth={800} mx="auto" mt={4} px={2}>
+        <ErrorState error={movieError} onRetry={() => refetchMovie()} />
+      </Box>
+    );
+  }
   if (!movie) return <Typography m={4}>Movie not found.</Typography>;
 
   return (
@@ -84,6 +105,9 @@ export function MovieDetailPage() {
         sx={{ mb: 2 }}
       />
       {isShowsLoading && <CircularProgress />}
+      {isShowsError && (
+        <ErrorState error={showsError} onRetry={() => refetchShows()} />
+      )}
       <List>
         {shows?.items.map((show) => (
           <ShowRow
@@ -94,8 +118,8 @@ export function MovieDetailPage() {
           />
         ))}
       </List>
-      {!isShowsLoading && shows?.items.length === 0 && (
-        <Typography>No showtimes found.</Typography>
+      {!isShowsLoading && !isShowsError && shows?.items.length === 0 && (
+        <EmptyState message="No showtimes found for this movie yet." />
       )}
     </Box>
   );

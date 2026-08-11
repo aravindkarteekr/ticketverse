@@ -18,6 +18,9 @@ import ListItemText from "@mui/material/ListItemText";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CircularProgress from "@mui/material/CircularProgress";
+import { ErrorState } from "../../components/ErrorState.js";
+import { EmptyState } from "../../components/EmptyState.js";
+import { getErrorMessage } from "../../lib/errors.js";
 import { createScreen, deleteScreen, listScreens } from "./theatresApi.js";
 
 const SEAT_TYPES = ["regular", "premium", "recliner"] as const;
@@ -26,7 +29,13 @@ export function TheatreScreensPage() {
   const { theatreId } = useParams<{ theatreId: string }>();
   const queryClient = useQueryClient();
 
-  const { data: screens, isLoading } = useQuery({
+  const {
+    data: screens,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ["screens", theatreId],
     queryFn: () => listScreens(theatreId!),
     enabled: !!theatreId,
@@ -64,6 +73,23 @@ export function TheatreScreensPage() {
       </Typography>
 
       {isLoading && <CircularProgress />}
+      {isError && <ErrorState error={error} onRetry={() => refetch()} />}
+      {createMutation.isError && (
+        <Typography color="error" mb={1}>
+          {getErrorMessage(
+            createMutation.error,
+            "Could not create this screen. Please try again.",
+          )}
+        </Typography>
+      )}
+      {deleteMutation.isError && (
+        <Typography color="error" mb={1}>
+          {getErrorMessage(
+            deleteMutation.error,
+            "Could not delete this screen. Please try again.",
+          )}
+        </Typography>
+      )}
       <List>
         {screens?.map((screen) => (
           <ListItem
@@ -86,6 +112,9 @@ export function TheatreScreensPage() {
           </ListItem>
         ))}
       </List>
+      {!isLoading && !isError && screens?.length === 0 && (
+        <EmptyState message="No screens yet. Add one below." />
+      )}
 
       <Typography variant="h6" mt={4} mb={2}>
         Add a screen

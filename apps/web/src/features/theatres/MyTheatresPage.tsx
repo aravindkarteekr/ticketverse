@@ -11,6 +11,8 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import CircularProgress from "@mui/material/CircularProgress";
+import { ErrorState } from "../../components/ErrorState.js";
+import { EmptyState } from "../../components/EmptyState.js";
 import { listMyTheatres, updateTheatre } from "./theatresApi.js";
 
 function TheatreCard({ theatre }: { theatre: Theatre }) {
@@ -36,6 +38,7 @@ function TheatreCard({ theatre }: { theatre: Theatre }) {
           fullWidth
           size="small"
         />
+        {mutation.isError && <ErrorState error={mutation.error} />}
       </CardContent>
       <CardActions>
         <Button
@@ -65,7 +68,13 @@ function TheatreCard({ theatre }: { theatre: Theatre }) {
 }
 
 export function MyTheatresPage() {
-  const { data: theatres, isLoading } = useQuery({
+  const {
+    data: theatres,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ["myTheatres"],
     queryFn: listMyTheatres,
   });
@@ -76,13 +85,14 @@ export function MyTheatresPage() {
         My theatres
       </Typography>
       {isLoading && <CircularProgress />}
+      {isError && <ErrorState error={error} onRetry={() => refetch()} />}
       <Stack>
         {theatres?.map((theatre) => (
           <TheatreCard key={theatre.id} theatre={theatre} />
         ))}
       </Stack>
-      {!isLoading && theatres?.length === 0 && (
-        <Typography>No theatres yet.</Typography>
+      {!isLoading && !isError && theatres?.length === 0 && (
+        <EmptyState message="You don't have any theatres yet. Submit a request to become a theatre owner." />
       )}
     </Box>
   );

@@ -10,11 +10,13 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
+import { ErrorState } from "../../components/ErrorState.js";
+import { EmptyState } from "../../components/EmptyState.js";
 import { searchMovies } from "./moviesApi.js";
 
 export function MoviesListPage() {
   const [q, setQ] = useState("");
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["movies", q],
     queryFn: () => searchMovies({ q: q || undefined }),
   });
@@ -32,6 +34,7 @@ export function MoviesListPage() {
         sx={{ mb: 3 }}
       />
       {isLoading && <CircularProgress />}
+      {isError && <ErrorState error={error} onRetry={() => refetch()} />}
       <Grid container spacing={2}>
         {data?.items.map((movie) => (
           <Grid item xs={12} sm={6} md={4} key={movie.id}>
@@ -56,8 +59,8 @@ export function MoviesListPage() {
           </Grid>
         ))}
       </Grid>
-      {!isLoading && data?.items.length === 0 && (
-        <Typography>No movies found.</Typography>
+      {!isLoading && !isError && data?.items.length === 0 && (
+        <EmptyState message="No movies found. Try a different search." />
       )}
     </Box>
   );

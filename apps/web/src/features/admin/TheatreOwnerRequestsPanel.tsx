@@ -8,6 +8,9 @@ import ListItemText from "@mui/material/ListItemText";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import CircularProgress from "@mui/material/CircularProgress";
+import { ErrorState } from "../../components/ErrorState.js";
+import { EmptyState } from "../../components/EmptyState.js";
+import { getErrorMessage } from "../../lib/errors.js";
 import {
   listPendingTheatreOwnerRequests,
   reviewTheatreOwnerRequest,
@@ -17,7 +20,13 @@ export function TheatreOwnerRequestsPanel() {
   const queryClient = useQueryClient();
   const [pendingId, setPendingId] = useState<string | null>(null);
 
-  const { data: requests, isLoading } = useQuery({
+  const {
+    data: requests,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ["admin", "theatre-owner-requests"],
     queryFn: listPendingTheatreOwnerRequests,
   });
@@ -40,15 +49,22 @@ export function TheatreOwnerRequestsPanel() {
   });
 
   if (isLoading) return <CircularProgress />;
+  if (isError) return <ErrorState error={error} onRetry={() => refetch()} />;
 
   return (
     <Box>
       <Typography variant="h6" mb={2}>
         Pending theatre-owner requests
       </Typography>
-      {requests?.length === 0 && (
-        <Typography color="text.secondary">Nothing pending.</Typography>
+      {reviewMutation.isError && (
+        <Typography color="error" mb={2}>
+          {getErrorMessage(
+            reviewMutation.error,
+            "Could not save that decision. Please try again.",
+          )}
+        </Typography>
       )}
+      {requests?.length === 0 && <EmptyState message="Nothing pending." />}
       <List>
         {requests?.map((request) => (
           <ListItem key={request.id} divider>

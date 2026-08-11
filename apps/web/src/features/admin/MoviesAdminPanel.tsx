@@ -13,6 +13,9 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { ErrorState } from "../../components/ErrorState.js";
+import { EmptyState } from "../../components/EmptyState.js";
+import { getErrorMessage } from "../../lib/errors.js";
 import { searchMovies } from "../movies/moviesApi.js";
 import { createMovie, deleteMovie } from "./adminApi.js";
 
@@ -20,7 +23,12 @@ export function MoviesAdminPanel() {
   const queryClient = useQueryClient();
   const [formError, setFormError] = useState<string | null>(null);
 
-  const { data: movies } = useQuery({
+  const {
+    data: movies,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ["admin", "movies"],
     queryFn: () => searchMovies({}),
   });
@@ -129,6 +137,18 @@ export function MoviesAdminPanel() {
         </Stack>
       </Box>
 
+      {isError && <ErrorState error={error} onRetry={() => refetch()} />}
+      {deleteMutation.isError && (
+        <Typography color="error" mb={1}>
+          {getErrorMessage(
+            deleteMutation.error,
+            "Could not delete this movie. Please try again.",
+          )}
+        </Typography>
+      )}
+      {!isError && movies?.items.length === 0 && (
+        <EmptyState message="No movies yet. Add one above." />
+      )}
       <List>
         {movies?.items.map((movie) => (
           <ListItem

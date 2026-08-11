@@ -12,6 +12,8 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
+import { ErrorState } from "../../components/ErrorState.js";
+import { getErrorMessage } from "../../lib/errors.js";
 import { getBooking } from "../booking/bookingApi.js";
 import { createPaymentIntent } from "./paymentApi.js";
 import { stripePromise } from "./stripeClient.js";
@@ -64,8 +66,15 @@ export function PaymentPage() {
   const navigate = useNavigate();
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [amount, setAmount] = useState<number | null>(null);
+  const [intentError, setIntentError] = useState<unknown>(null);
 
-  const { data: booking, isLoading } = useQuery({
+  const {
+    data: booking,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ["booking", bookingId],
     queryFn: () => getBooking(bookingId!),
     enabled: !!bookingId,
@@ -74,13 +83,23 @@ export function PaymentPage() {
   useEffect(() => {
     if (!bookingId || !booking) return;
     if (booking.status !== "pending_payment") return;
-    createPaymentIntent(bookingId).then((result) => {
-      setClientSecret(result.clientSecret);
-      setAmount(result.amount);
-    });
+    setIntentError(null);
+    createPaymentIntent(bookingId)
+      .then((result) => {
+        setClientSecret(result.clientSecret);
+        setAmount(result.amount);
+      })
+      .catch((err: unknown) => setIntentError(err));
   }, [bookingId, booking]);
 
   if (isLoading) return <CircularProgress sx={{ m: 4 }} />;
+  if (isError) {
+    return (
+      <Box maxWidth={500} mx="auto" mt={4} px={2}>
+        <ErrorState error={error} onRetry={() => refetch()} />
+      </Box>
+    );
+  }
   if (!booking) return <Typography m={4}>Booking not found.</Typography>;
 
   if (booking.status !== "pending_payment") {
@@ -102,12 +121,20 @@ export function PaymentPage() {
         Checkout
       </Typography>
       <Typography mb={2}>Amount: ₹{amount ?? booking.totalAmount}</Typography>
+      {intentError !== null && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {getErrorMessage(
+            intentError,
+            "Could not start checkout. Please try again.",
+          )}
+        </Alert>
+      )}
       {clientSecret ? (
         <Elements stripe={stripePromise} options={{ clientSecret }}>
           <CheckoutForm />
         </Elements>
       ) : (
-        <CircularProgress />
+        !intentError && <CircularProgress />
       )}
     </Box>
   );

@@ -14,6 +14,8 @@ import ListItemText from "@mui/material/ListItemText";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CircularProgress from "@mui/material/CircularProgress";
+import { ErrorState } from "../../components/ErrorState.js";
+import { EmptyState } from "../../components/EmptyState.js";
 import { listScreens } from "./theatresApi.js";
 import { searchMovies } from "../movies/moviesApi.js";
 import {
@@ -32,16 +34,32 @@ export function TheatreShowsPage() {
   const [prices, setPrices] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState<string | null>(null);
 
-  const { data: screens } = useQuery({
+  const {
+    data: screens,
+    isError: isScreensError,
+    error: screensError,
+    refetch: refetchScreens,
+  } = useQuery({
     queryKey: ["screens", theatreId],
     queryFn: () => listScreens(theatreId!),
     enabled: !!theatreId,
   });
-  const { data: movies } = useQuery({
+  const {
+    data: movies,
+    isError: isMoviesError,
+    error: moviesError,
+    refetch: refetchMovies,
+  } = useQuery({
     queryKey: ["movies", "all"],
     queryFn: () => searchMovies({}),
   });
-  const { data: shows, isLoading: isShowsLoading } = useQuery({
+  const {
+    data: shows,
+    isLoading: isShowsLoading,
+    isError: isShowsError,
+    error: showsError,
+    refetch: refetchShows,
+  } = useQuery({
     queryKey: ["theatreShows", theatreId],
     queryFn: () => listShowsByTheatre(theatreId!),
     enabled: !!theatreId,
@@ -104,6 +122,12 @@ export function TheatreShowsPage() {
       </Typography>
 
       <Box component="form" onSubmit={handleSubmit} mb={4}>
+        {isScreensError && (
+          <ErrorState error={screensError} onRetry={() => refetchScreens()} />
+        )}
+        {isMoviesError && (
+          <ErrorState error={moviesError} onRetry={() => refetchMovies()} />
+        )}
         <Stack spacing={2}>
           <TextField
             select
@@ -162,6 +186,9 @@ export function TheatreShowsPage() {
         Scheduled shows
       </Typography>
       {isShowsLoading && <CircularProgress />}
+      {isShowsError && (
+        <ErrorState error={showsError} onRetry={() => refetchShows()} />
+      )}
       <List>
         {shows?.map((show) => (
           <ListItem
@@ -183,6 +210,9 @@ export function TheatreShowsPage() {
           </ListItem>
         ))}
       </List>
+      {!isShowsLoading && !isShowsError && shows?.length === 0 && (
+        <EmptyState message="No shows scheduled yet." />
+      )}
     </Box>
   );
 }

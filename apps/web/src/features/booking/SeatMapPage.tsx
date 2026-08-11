@@ -8,6 +8,8 @@ import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
 import Stack from "@mui/material/Stack";
+import { ErrorState } from "../../components/ErrorState.js";
+import { getErrorMessage } from "../../lib/errors.js";
 import { getSeatAvailability, holdSeats, createBooking } from "./bookingApi.js";
 
 const SEAT_ID_PATTERN = /^([A-Za-z]+)(\d+)$/;
@@ -44,7 +46,13 @@ export function SeatMapPage() {
   } | null>(null);
   const [conflict, setConflict] = useState<string[]>([]);
 
-  const { data: seats, isLoading } = useQuery({
+  const {
+    data: seats,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ["seats", showId],
     queryFn: () => getSeatAvailability(showId!),
     enabled: !!showId,
@@ -95,6 +103,13 @@ export function SeatMapPage() {
   }
 
   if (isLoading) return <CircularProgress sx={{ m: 4 }} />;
+  if (isError) {
+    return (
+      <Box maxWidth={800} mx="auto" mt={4} px={2}>
+        <ErrorState error={error} onRetry={() => refetch()} />
+      </Box>
+    );
+  }
 
   return (
     <Box maxWidth={800} mx="auto" mt={4} px={2}>
@@ -106,6 +121,23 @@ export function SeatMapPage() {
         <Alert severity="warning" sx={{ mb: 2 }}>
           These seats were just taken by someone else: {conflict.join(", ")}.
           Please choose again.
+        </Alert>
+      )}
+
+      {holdMutation.isError && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {getErrorMessage(
+            holdMutation.error,
+            "Could not hold these seats. Please try again.",
+          )}
+        </Alert>
+      )}
+      {bookingMutation.isError && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {getErrorMessage(
+            bookingMutation.error,
+            "Could not confirm this booking. Please try again.",
+          )}
         </Alert>
       )}
 

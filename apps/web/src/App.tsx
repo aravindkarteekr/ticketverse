@@ -8,6 +8,7 @@ import { queryClient } from "./app/queryClient.js";
 import { theme } from "./theme/theme.js";
 import { router } from "./app/router.js";
 import { useBootstrapAuth } from "./app/useBootstrapAuth.js";
+import { AppErrorBoundary } from "./components/AppErrorBoundary.js";
 
 function AuthBootstrap() {
   useBootstrapAuth();
@@ -20,7 +21,9 @@ export function App() {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <AuthBootstrap />
+          <AppErrorBoundary>
+            <AuthBootstrap />
+          </AppErrorBoundary>
         </ThemeProvider>
       </QueryClientProvider>
     </Provider>

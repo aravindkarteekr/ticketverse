@@ -8,13 +8,16 @@ import TableBody from "@mui/material/TableBody";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import Pagination from "@mui/material/Pagination";
+import CircularProgress from "@mui/material/CircularProgress";
+import { ErrorState } from "../../components/ErrorState.js";
+import { EmptyState } from "../../components/EmptyState.js";
 import { listUsers, listAdminTheatres, listAdminBookings } from "./adminApi.js";
 
 const PAGE_SIZE = 10;
 
 export function UsersAdminPanel() {
   const [page, setPage] = useState(1);
-  const { data } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["admin", "users", page],
     queryFn: () => listUsers({ page, limit: PAGE_SIZE }),
   });
@@ -24,24 +27,31 @@ export function UsersAdminPanel() {
       <Typography variant="h6" mb={2}>
         Users
       </Typography>
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Email</TableCell>
-            <TableCell>Role</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data?.items.map((user) => (
-            <TableRow key={user.id}>
-              <TableCell>{user.name}</TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>{user.role}</TableCell>
+      {isLoading && <CircularProgress />}
+      {isError && <ErrorState error={error} onRetry={() => refetch()} />}
+      {!isLoading && !isError && data?.items.length === 0 && (
+        <EmptyState message="No users found." />
+      )}
+      {data && data.items.length > 0 && (
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Role</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {data?.items.map((user) => (
+              <TableRow key={user.id}>
+                <TableCell>{user.name}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{user.role}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
       {data && (
         <Pagination
           sx={{ mt: 2 }}
@@ -56,7 +66,7 @@ export function UsersAdminPanel() {
 
 export function TheatresAdminPanel() {
   const [page, setPage] = useState(1);
-  const { data } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["admin", "theatres", page],
     queryFn: () => listAdminTheatres({ page, limit: PAGE_SIZE }),
   });
@@ -66,24 +76,31 @@ export function TheatresAdminPanel() {
       <Typography variant="h6" mb={2}>
         Theatres
       </Typography>
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>City</TableCell>
-            <TableCell>Address</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data?.items.map((theatre) => (
-            <TableRow key={theatre.id}>
-              <TableCell>{theatre.name}</TableCell>
-              <TableCell>{theatre.city}</TableCell>
-              <TableCell>{theatre.address}</TableCell>
+      {isLoading && <CircularProgress />}
+      {isError && <ErrorState error={error} onRetry={() => refetch()} />}
+      {!isLoading && !isError && data?.items.length === 0 && (
+        <EmptyState message="No theatres found." />
+      )}
+      {data && data.items.length > 0 && (
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>City</TableCell>
+              <TableCell>Address</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {data?.items.map((theatre) => (
+              <TableRow key={theatre.id}>
+                <TableCell>{theatre.name}</TableCell>
+                <TableCell>{theatre.city}</TableCell>
+                <TableCell>{theatre.address}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
       {data && (
         <Pagination
           sx={{ mt: 2 }}
@@ -98,7 +115,7 @@ export function TheatresAdminPanel() {
 
 export function BookingsAdminPanel() {
   const [page, setPage] = useState(1);
-  const { data } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["admin", "bookings", page],
     queryFn: () => listAdminBookings({ page, limit: PAGE_SIZE }),
   });
@@ -108,28 +125,35 @@ export function BookingsAdminPanel() {
       <Typography variant="h6" mb={2}>
         Bookings
       </Typography>
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell>Seats</TableCell>
-            <TableCell>Amount</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell>Created</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data?.items.map((booking) => (
-            <TableRow key={booking.id}>
-              <TableCell>{booking.seatIds.join(", ")}</TableCell>
-              <TableCell>₹{booking.totalAmount}</TableCell>
-              <TableCell>{booking.status}</TableCell>
-              <TableCell>
-                {new Date(booking.createdAt).toLocaleString()}
-              </TableCell>
+      {isLoading && <CircularProgress />}
+      {isError && <ErrorState error={error} onRetry={() => refetch()} />}
+      {!isLoading && !isError && data?.items.length === 0 && (
+        <EmptyState message="No bookings found." />
+      )}
+      {data && data.items.length > 0 && (
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>Seats</TableCell>
+              <TableCell>Amount</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Created</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {data?.items.map((booking) => (
+              <TableRow key={booking.id}>
+                <TableCell>{booking.seatIds.join(", ")}</TableCell>
+                <TableCell>₹{booking.totalAmount}</TableCell>
+                <TableCell>{booking.status}</TableCell>
+                <TableCell>
+                  {new Date(booking.createdAt).toLocaleString()}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
       {data && (
         <Pagination
           sx={{ mt: 2 }}
