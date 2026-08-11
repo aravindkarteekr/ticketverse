@@ -161,15 +161,21 @@ regular user without going through signup/approval first.
 
 Any of these can be scoped to a single package, e.g. `npx turbo run test --filter=@ticketverse/api`.
 
-## Deployment (planned)
+## Deployment
 
-Docker was intentionally deferred for this academic project in favor of free-tier hosted services:
+Docker was intentionally deferred for this academic project in favor of free-tier hosted services.
+The app is live:
 
-- Backend → Render (or similar Node host)
-- MongoDB → MongoDB Atlas
-- Redis → Upstash or Render Redis
-- Frontend → Netlify (or Vercel)
-- CORS configured for the deployed frontend origin with `credentials: true`; cookies require
-  `sameSite=None; Secure` for cross-site (Netlify↔Render) delivery.
-- Stripe webhooks tested locally via the Stripe CLI (`stripe listen --forward-to`), and pointed at
-  the deployed backend's webhook URL in production.
+- **Live app:** https://ticketverse-web.netlify.app/
+- **Backend API:** https://ticketverse-api.onrender.com (health check: `/health`)
+
+Topology:
+
+- Backend → **Render**, built and started via a `render.yaml` Blueprint at the repo root
+- MongoDB → **MongoDB Atlas** (M0 free tier)
+- Redis → **Upstash**
+- Frontend → **Netlify**, built via `netlify.toml`
+- CORS configured for the deployed frontend origin with `credentials: true`; cookies use
+  `sameSite=None; Secure` for cross-site (Netlify↔Render) delivery in production.
+- Stripe webhooks tested locally via the Stripe CLI (`stripe listen --forward-to`), and registered
+  against the deployed backend's webhook URL in production.
