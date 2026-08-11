@@ -13,6 +13,9 @@ import { createBookingConfirmationPort } from "./modules/booking/index.js";
 export function createApp() {
   const app = express();
 
+  // Trust exactly one hop (Render's edge proxy) so req.ip/X-Forwarded-For are read correctly for rate limiting.
+  app.set("trust proxy", 1);
+
   app.use(helmet());
   app.use(
     cors({
