@@ -1,0 +1,43 @@
+sequenceDiagram
+    actor U as User
+    participant FE as React Frontend
+    participant API as TicketVerse API
+    participant Redis as Redis (seat holds)
+    participant Mongo as MongoDB
+    participant Stripe as Stripe
+
+    U->>FE: Select seats for a showtime
+    FE->>API: POST /bookings/hold {showId, seatIds}
+    API->>Redis: SETNX hold:show:seat (TTL ~5-8 min)
+    alt all seats available
+        Redis-->>API: OK for every seat
+        API-->>FE: 201 {holdId, expiresAt}
+    else one or more already held
+        Redis-->>API: conflict on some seat(s)
+        API->>Redis: release any partial holds (rollback)
+        API-->>FE: 409 {unavailableSeatIds}
+    end
+
+    FE->>API: POST /bookings {holdId}
+    API->>Mongo: create Booking {status: pending_payment}
+    API-->>FE: 201 {bookingId, totalAmount}
+
+    FE->>API: POST /payments/intent {bookingId}
+    API->>Stripe: paymentIntents.create({amount, currency})
+    Stripe-->>API: {id, client_secret}
+    API->>Mongo: create Payment {stripePaymentIntentId}
+    API-->>FE: {clientSecret}
+
+    FE->>Stripe: stripe.confirmPayment (Stripe Elements)
+    Stripe-->>FE: redirect / confirmation
+
+    Stripe->>API: POST /payments/webhook (signed event)
+    API->>API: stripe.webhooks.constructEvent(rawBody, signature, secret)
+    alt payment_intent.succeeded
+        API->>Mongo: mark Payment + Booking confirmed
+        API->>Redis: release seat holds (now durably booked)
+    else payment_intent.payment_failed
+        API->>Mongo: cancel Booking
+        API->>Redis: release seat holds
+    end
+    API-->>Stripe: 200 OK

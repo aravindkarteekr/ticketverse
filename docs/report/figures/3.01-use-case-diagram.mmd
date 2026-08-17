@@ -1,0 +1,44 @@
+flowchart LR
+    User(("User\n(moviegoer)"))
+    Owner(("Theatre Owner"))
+    Admin(("Administrator"))
+
+    UC1["Sign up / Log in"]
+    UC2["Browse movies & showtimes"]
+    UC3["View live seat map"]
+    UC4["Hold seats (temporary lock)"]
+    UC5["Pay for booking (Stripe)"]
+    UC6["View booking history"]
+    UC7["Request theatre-owner role"]
+
+    UC8["Manage own theatres"]
+    UC9["Manage screens & seat layout"]
+    UC10["Schedule / update / cancel showtimes"]
+
+    UC11["Approve / reject theatre-owner requests"]
+    UC12["Curate movie catalogue (CRUD)"]
+    UC13["Oversee all users"]
+    UC14["Oversee all theatres"]
+    UC15["Oversee all bookings"]
+
+    User --> UC1
+    User --> UC2
+    User --> UC3
+    User --> UC4
+    User --> UC5
+    User --> UC6
+    User --> UC7
+
+    Owner --> UC1
+    Owner --> UC8
+    Owner --> UC9
+    Owner --> UC10
+
+    Admin --> UC1
+    Admin --> UC11
+    Admin --> UC12
+    Admin --> UC13
+    Admin --> UC14
+    Admin --> UC15
+
+    UC7 -.->|"on approval, promotes role"| Owner

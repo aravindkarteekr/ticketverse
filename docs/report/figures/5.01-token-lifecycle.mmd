@@ -1,0 +1,12 @@
+stateDiagram-v2
+    [*] --> Anonymous
+    Anonymous --> Authenticated: signup / login\n(bcrypt.compare, salt rounds=12)\nissues access(15m) + refresh(7d) cookies
+
+    Authenticated --> Authenticated: request with valid access cookie\n(authenticate middleware verifies signature+expiry)
+
+    Authenticated --> Refreshing: access token expired,\nrefresh cookie present
+    Refreshing --> Authenticated: POST /auth/refresh\nverifies refresh token + tokenVersion match\nrotates both cookies
+    Refreshing --> Anonymous: refresh token invalid/expired\nor tokenVersion mismatch (revoked)
+
+    Authenticated --> Anonymous: POST /auth/logout\n(tokenVersion++, cookies cleared)
+    Authenticated --> Anonymous: admin promotes/changes role\n(tokenVersion++ forces re-auth)

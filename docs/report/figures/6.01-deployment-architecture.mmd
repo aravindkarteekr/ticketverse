@@ -1,0 +1,28 @@
+flowchart TB
+    Dev["Developer\n(git push to main)"]
+    GH["GitHub\naravindkarteekr/ticketverse"]
+
+    subgraph RenderCloud["Render"]
+        RenderBuild["Blueprint build\nnpm install --include=dev\nnpx turbo run build --filter=@ticketverse/api"]
+        RenderRun["apps/api\nnode apps/api/dist/server.js\nhttps://ticketverse-api.onrender.com"]
+    end
+
+    subgraph NetlifyCloud["Netlify"]
+        NetBuild["Build\nnpm install --include=dev\nnpx turbo run build --filter=@ticketverse/web"]
+        NetRun["apps/web static SPA\nhttps://ticketverse-web.netlify.app"]
+    end
+
+    Atlas[("MongoDB Atlas\ncluster0.gj1eeyz.mongodb.net")]
+    Upstash[("Upstash Redis\nrediss://")]
+    StripeDash["Stripe Dashboard\nwebhook endpoint registered\nagainst the live Render URL"]
+
+    Dev --> GH
+    GH -->|"Blueprint deploy hook"| RenderBuild --> RenderRun
+    GH -->|"deploy hook"| NetBuild --> NetRun
+
+    RenderRun --> Atlas
+    RenderRun --> Upstash
+    RenderRun <-->|"signed webhook"| StripeDash
+
+    NetRun -->|"HTTPS, credentials: include\nVITE_API_BASE_URL=.../api/v1"| RenderRun
+    RenderRun -->|"CORS allow-list\nCLIENT_ORIGIN=netlify URL\nCookies: SameSite=None; Secure"| NetRun

@@ -1,0 +1,29 @@
+flowchart LR
+    subgraph Client["Client (Browser)"]
+        FE["React + Vite SPA\nMUI, Redux Toolkit (auth), React Query\naxios (withCredentials)"]
+    end
+
+    subgraph Netlify["Netlify"]
+        FE
+    end
+
+    subgraph Render["Render (apps/api)"]
+        API["Express + TypeScript\nDDD modules: identity, catalog,\ntheatre, show, booking, payment"]
+    end
+
+    subgraph DataStores["Managed Data Stores"]
+        Mongo[("MongoDB Atlas\nUsers, Movies, Theatres,\nScreens, Shows, Bookings")]
+        Redis[("Upstash Redis\nSETNX seat holds (TTL)")]
+    end
+
+    subgraph Stripe["Stripe"]
+        PI["PaymentIntents API"]
+        WH["Webhook: payment_intent.succeeded /\npayment_intent.payment_failed"]
+    end
+
+    FE -->|"HTTPS, JSON, httpOnly cookies"| API
+    API -->|"Mongoose"| Mongo
+    API -->|"ioredis (rediss://)"| Redis
+    API -->|"create PaymentIntent"| PI
+    PI -->|"signed webhook event"| WH
+    WH -->|"POST /api/v1/payments/webhook\n(signature verified)"| API

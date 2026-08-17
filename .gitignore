@@ -10,4 +10,3 @@ build/
 coverage/
 .vite/
 apps/api/test/.mongo-uri
-docs/report/

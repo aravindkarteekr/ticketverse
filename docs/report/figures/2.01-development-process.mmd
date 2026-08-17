@@ -1,0 +1,21 @@
+flowchart TD
+    A[Phase 0\nMonorepo bootstrap\nnpm workspaces + Turborepo] --> B[Phase 1\nShared Zod schema package\n@ticketverse/schemas]
+    B --> C[Phase 2\nBackend scaffold\nExpress + DDD modules]
+    B --> D[Phase 3\nFrontend scaffold\nVite + React + MUI]
+    C --> C1[identity module\nauth, roles, theatre-owner requests]
+    C1 --> C2[catalog module\nmovie CRUD]
+    C1 --> C3[theatre module\ntheatres + screens]
+    C3 --> C4[show module\nshowtime scheduling]
+    C4 --> C5[booking module\nRedis seat holds]
+    C5 --> C6[payment module\nStripe PaymentIntents + webhook]
+    D --> D1[auth feature\nlogin/signup, ProtectedRoute]
+    D1 --> D2[movies + theatres features]
+    D2 --> D3[booking feature\nseat map]
+    D3 --> D4[payment feature\nStripe Elements checkout]
+    D1 --> D5[admin feature\napprove requests, manage catalogue]
+    C6 --> E[Phase 4\nIntegration wiring\nJWT/cookie config, Stripe keys, manual E2E]
+    D4 --> E
+    D5 --> E
+    E --> F[Phase 5\nAutomated testing\nVitest + Supertest + RTL, 26 tests]
+    F --> G[Phase 6\nDocumentation\nREADMEs, architecture notes]
+    G --> H[Live deployment\nRender + Netlify + MongoDB Atlas + Upstash Redis]
